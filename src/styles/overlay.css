@@ -27,17 +27,18 @@ body {
   left: 0;
   display: flex;
   align-items: center;
-  transform: translateX(-40%);
+  transform: translateX(-50%);
   will-change: transform;
-  animation: drift 9s cubic-bezier(0.45, 0, 0.55, 1) forwards;
+  /* BRAND.md §6: long entrance, slow middle, gentle exit. */
+  animation: drift 9s cubic-bezier(0.7, 0.05, 0.3, 0.95) forwards;
 }
 
 @keyframes drift {
   0% {
-    transform: translateX(-40%);
+    transform: translateX(-50%);
   }
   100% {
-    transform: translateX(120vw);
+    transform: translateX(130vw);
   }
 }
 
@@ -88,4 +89,44 @@ body[data-stage="t5"] .overlay__plane {
 body[data-stage="t5"] .overlay__stage {
   animation-duration: 7s;
   top: 28%;
+}
+
+/* Reduce-motion fallback: static centered banner, no plane motion.
+   Per PRD §6 accessibility row + BRAND.md §6 ("respect the cursor"
+   extends to motion preferences). */
+body[data-reduce-motion="1"] .overlay__stage {
+  left: 50%;
+  top: 28%;
+  transform: translate(-50%, 0);
+  animation: fade 9s ease-in-out forwards;
+  justify-content: center;
+}
+
+body[data-reduce-motion="1"] .overlay__plane {
+  display: none;
+}
+
+body[data-reduce-motion="1"] .overlay__pennant {
+  border-radius: 6px;
+  margin-right: 0;
+  text-align: center;
+  background: var(--reduce-fill, #dfe7ef);
+}
+
+body[data-reduce-motion="1"][data-stage="t10"] .overlay__pennant {
+  background: #dfe7ef;
+}
+body[data-reduce-motion="1"][data-stage="t5"] .overlay__pennant {
+  background: #f7cf8a;
+}
+
+@keyframes fade {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  12%,
+  88% {
+    opacity: 1;
+  }
 }

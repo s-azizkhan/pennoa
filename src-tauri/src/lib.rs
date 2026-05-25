@@ -1,3 +1,4 @@
+mod accessibility;
 mod commands;
 mod model;
 mod overlay;
@@ -40,6 +41,7 @@ pub fn run() {
             commands::add_meeting,
             commands::update_meeting,
             commands::delete_meeting,
+            accessibility::is_reduce_motion,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
