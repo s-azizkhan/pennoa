@@ -9,6 +9,10 @@ use tauri::{AppHandle, Manager};
 pub struct Settings {
     #[serde(default)]
     pub plane_svg: Option<String>,
+    #[serde(default)]
+    pub banner_variant: Option<String>,
+    #[serde(default)]
+    pub banner_speed: Option<String>,
 }
 
 pub struct SettingsStore {
@@ -46,6 +50,30 @@ impl SettingsStore {
     pub fn set_plane_svg(&self, svg: Option<String>) -> Result<(), String> {
         let mut g = self.inner.lock().unwrap();
         g.plane_svg = svg;
+        let snapshot = g.clone();
+        drop(g);
+        self.write(&snapshot)
+    }
+
+    pub fn banner_variant(&self) -> Option<String> {
+        self.inner.lock().unwrap().banner_variant.clone()
+    }
+
+    pub fn set_banner_variant(&self, variant: Option<String>) -> Result<(), String> {
+        let mut g = self.inner.lock().unwrap();
+        g.banner_variant = variant;
+        let snapshot = g.clone();
+        drop(g);
+        self.write(&snapshot)
+    }
+
+    pub fn banner_speed(&self) -> Option<String> {
+        self.inner.lock().unwrap().banner_speed.clone()
+    }
+
+    pub fn set_banner_speed(&self, speed: Option<String>) -> Result<(), String> {
+        let mut g = self.inner.lock().unwrap();
+        g.banner_speed = speed;
         let snapshot = g.clone();
         drop(g);
         self.write(&snapshot)

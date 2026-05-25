@@ -20,9 +20,28 @@ fn is_reduce_motion_impl() -> bool {
     }
 }
 
-// Windows path will read SPI_GETCLIENTAREAANIMATION via the win32 API
-// when the cross-platform port lands. Falls back to false until then.
-#[cfg(not(target_os = "macos"))]
+#[cfg(target_os = "windows")]
+fn is_reduce_motion_impl() -> bool {
+    use windows_sys::Win32::UI::WindowsAndMessaging::{
+        SystemParametersInfoW, SPI_GETCLIENTAREAANIMATION,
+    };
+    let mut animations_enabled: i32 = 1;
+    let ok = unsafe {
+        SystemParametersInfoW(
+            SPI_GETCLIENTAREAANIMATION,
+            0,
+            &mut animations_enabled as *mut _ as *mut _,
+            0,
+        )
+    };
+    if ok == 0 {
+        return false;
+    }
+    // animations disabled == reduce motion on
+    animations_enabled == 0
+}
+
+#[cfg(not(any(target_os = "macos", target_os = "windows")))]
 fn is_reduce_motion_impl() -> bool {
     false
 }

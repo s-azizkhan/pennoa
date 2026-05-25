@@ -12,7 +12,9 @@ Early scaffold. See `prd.md` for the v1 spec and `BRAND.md` for the brand founda
 
 ## Develop
 
-Prereqs: Node 20+, Rust stable (`~/.cargo/bin` on PATH), Xcode Command Line Tools (macOS).
+Prereqs (shared): Node 20+, Rust stable (`~/.cargo/bin` on PATH).
+- macOS: Xcode Command Line Tools.
+- Windows: Visual Studio 2022 Build Tools (Desktop development with C++) and the WebView2 runtime (preinstalled on Win11; download from Microsoft on Win10).
 
 ```bash
 npm install
@@ -21,10 +23,29 @@ npm run tauri:dev
 
 ## Build
 
+### macOS
+
 ```bash
 npm run tauri:build
 # .dmg lands in src-tauri/target/release/bundle/dmg/
 ```
+
+### Windows
+
+```powershell
+npm install
+npm run tauri:build
+# .msi  → src-tauri\target\release\bundle\msi\
+# .exe  → src-tauri\target\release\bundle\nsis\
+```
+
+Cross-compiling macOS → Windows is **not** supported here (tauri-winres needs `llvm-rc`); build on a Windows host or via GitHub Actions on `windows-latest`.
+
+## Platform notes
+
+- The Dock icon (macOS) is hidden via `ActivationPolicy::Accessory`; on Windows the taskbar entry is hidden via `skipTaskbar`. The tray icon is the entry point on both platforms.
+- Reduce-motion respect: macOS reads `com.apple.universalaccess reduceMotionEnabled`; Windows reads `SPI_GETCLIENTAREAANIMATION`.
+- Auto-start: handled by `tauri-plugin-autostart` (LaunchAgent on macOS, registry Run key on Windows).
 
 ## Stack
 

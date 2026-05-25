@@ -1,3 +1,5 @@
+@import "./fonts.css";
+
 html,
 body {
   margin: 0;
@@ -9,7 +11,7 @@ body {
 }
 
 body {
-  font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+  font-family: "Fraunces", Georgia, serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -21,18 +23,132 @@ body {
   pointer-events: none;
 }
 
+/* ======================================================================
+   Wind streaks — air parting around the banner. Streams right → left
+   continuously, faster than the stage drift, so it reads as wind rather
+   than co-moving particles.
+   ====================================================================== */
+
+.overlay__wind {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  z-index: 0;
+  opacity: 1;
+  transition: opacity 0.5s ease-out;
+}
+
+body.is-done .overlay__wind {
+  opacity: 0;
+}
+
+body.is-done .overlay__wind-line,
+body.is-done .overlay__wind-dot {
+  animation-play-state: paused;
+}
+
+.overlay__wind-line {
+  position: absolute;
+  top: var(--y);
+  right: -200px;
+  width: var(--w, 80px);
+  height: 1.4px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, var(--o, 0.45)) 50%,
+    transparent 100%
+  );
+  border-radius: 2px;
+  animation: stream var(--dur, 1.6s) linear infinite;
+  animation-delay: var(--delay, 0s);
+  will-change: transform, opacity;
+  filter: blur(0.3px);
+}
+
+.overlay__wind-dot {
+  position: absolute;
+  top: var(--y);
+  right: -40px;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.55);
+  animation: stream var(--dur, 1.6s) linear infinite;
+  animation-delay: var(--delay, 0s);
+  will-change: transform, opacity;
+}
+
+@keyframes stream {
+  0% {
+    transform: translateX(0);
+    opacity: 0;
+  }
+  6% {
+    opacity: 1;
+  }
+  92% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateX(-110vw);
+    opacity: 0;
+  }
+}
+
+/* Palette tints — wind picks up colour from the stage palette */
+body[data-stage="t10"] .overlay__wind-line {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(184, 211, 226, var(--o, 0.45)) 50%,
+    transparent 100%
+  );
+}
+body[data-stage="t10"] .overlay__wind-dot {
+  background: rgba(184, 211, 226, 0.55);
+}
+
+body[data-stage="t5"] .overlay__wind-line {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(251, 217, 154, var(--o, 0.45)) 50%,
+    transparent 100%
+  );
+}
+body[data-stage="t5"] .overlay__wind-dot {
+  background: rgba(251, 217, 154, 0.55);
+}
+
+/* Scale wind speed with banner speed */
+.overlay__wind-line,
+.overlay__wind-dot {
+  animation-duration: calc(var(--dur, 1.6s) * var(--speed-mult, 1));
+}
+
 .overlay__stage {
   position: absolute;
   top: 14%;
   left: 0;
   display: flex;
   align-items: center;
-  gap: 0;
   transform: translateX(-55%);
   will-change: transform;
-  animation: drift 9s linear forwards;
+  animation: drift calc(13s * var(--speed-mult, 1)) linear forwards;
   filter: drop-shadow(0 12px 28px rgba(14, 26, 43, 0.22))
     drop-shadow(0 3px 6px rgba(14, 26, 43, 0.18));
+}
+
+body[data-speed="slow"] {
+  --speed-mult: 1.45;
+}
+body[data-speed="normal"] {
+  --speed-mult: 1;
+}
+body[data-speed="fast"] {
+  --speed-mult: 0.6;
 }
 
 @keyframes drift {
@@ -44,24 +160,38 @@ body {
   }
 }
 
-/* === Pennant ============================================================ */
-
 .overlay__pennant {
   position: relative;
-  font-family: "GT Sectra", "Tiempos Headline", "New York", Georgia, serif;
-  font-size: 22px;
-  font-weight: 500;
-  letter-spacing: -0.005em;
-  padding: 18px 42px 18px 26px;
-  min-width: 280px;
   white-space: nowrap;
-  /* Swallow-pennant point on the right, flush left edge. */
+  min-width: 280px;
+  transform-origin: right center;
+  animation: ripple 2.8s ease-in-out infinite;
+  will-change: transform;
+  /* Soft zigzag trailing (left) edge — shared by every variant. */
   clip-path: polygon(
-    0 0,
-    calc(100% - 26px) 0,
-    100% 50%,
-    calc(100% - 26px) 100%,
-    0 100%
+    7px 0,
+    100% 0,
+    100% 100%,
+    7px 100%,
+    0 95%,
+    7px 90%,
+    0 85%,
+    7px 80%,
+    0 75%,
+    7px 70%,
+    0 65%,
+    7px 60%,
+    0 55%,
+    7px 50%,
+    0 45%,
+    7px 40%,
+    0 35%,
+    7px 30%,
+    0 25%,
+    7px 20%,
+    0 15%,
+    7px 10%,
+    0 5%
   );
 }
 
@@ -69,29 +199,101 @@ body {
   position: relative;
   z-index: 2;
   display: inline-block;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
 }
 
-/* Decorative tassel/streamer — small line trailing off the pennant base */
 .overlay__tassel {
-  position: absolute;
-  bottom: -2px;
-  left: 18px;
-  right: 60px;
-  height: 2px;
-  background: currentColor;
-  opacity: 0.18;
-  border-radius: 2px;
+  display: none;
 }
 
-/* === Plane ============================================================== */
+/* Light sheen sweep — fabric catching the sun. */
+.overlay__sheen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: linear-gradient(
+    100deg,
+    transparent 32%,
+    rgba(255, 255, 255, 0.18) 46%,
+    rgba(255, 255, 255, 0.32) 50%,
+    rgba(255, 255, 255, 0.18) 54%,
+    transparent 68%
+  );
+  background-size: 260% 100%;
+  background-position: 220% 50%;
+  animation: sheen 4.5s ease-in-out infinite;
+  mix-blend-mode: overlay;
+}
+
+/* Subtle vertical fold shadow that sways — gives fabric depth. */
+.overlay__fold {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.08) 0%,
+    transparent 25%,
+    transparent 75%,
+    rgba(0, 0, 0, 0.06) 100%
+  );
+  mix-blend-mode: multiply;
+  opacity: 0.7;
+  animation: fold 3.6s ease-in-out infinite;
+}
+
+@keyframes sheen {
+  0% {
+    background-position: 220% 50%;
+  }
+  60%,
+  100% {
+    background-position: -60% 50%;
+  }
+}
+
+@keyframes fold {
+  0%,
+  100% {
+    opacity: 0.7;
+    background-position: 0% 50%;
+  }
+  50% {
+    opacity: 0.45;
+    background-position: 20% 50%;
+  }
+}
 
 .overlay__plane {
   width: 150px;
   height: auto;
-  margin-left: -10px;
-  /* Subtle rocking adds life without breaking the steady drift. */
+  margin-left: 0;
   animation: bob 2.6s ease-in-out infinite;
+}
+
+.overlay__rope {
+  flex: 0 0 56px;
+  width: 56px;
+  height: 32px;
+  color: #14304f;
+  align-self: center;
+  display: block;
+  margin: 0 -2px;
+  z-index: 1;
+}
+
+body[data-stage="t5"] .overlay__rope {
+  color: #6b2d1b;
+}
+
+/* For dark-background variants, lighten rope */
+body[data-variant="marquee"] .overlay__rope,
+body[data-variant="cyber"] .overlay__rope,
+body[data-variant="neon"] .overlay__rope,
+body[data-variant="synthwave"] .overlay__rope,
+body[data-variant="aurora"] .overlay__rope {
+  color: #fefcf6;
 }
 
 .overlay__plane svg {
@@ -110,13 +312,38 @@ body {
   }
 }
 
-/* === Stage palettes per PRD §4.2 ======================================= */
+@keyframes ripple {
+  0%,
+  100% {
+    transform: skewY(-0.8deg) translateY(0);
+  }
+  25% {
+    transform: skewY(0.9deg) translateY(-1.5px);
+  }
+  50% {
+    transform: skewY(1.2deg) translateY(0);
+  }
+  75% {
+    transform: skewY(-0.4deg) translateY(1.5px);
+  }
+}
 
-/* T−10 — calm sky + parchment, slow */
-body[data-stage="t10"] .overlay__pennant {
+/* ======================================================================
+   VARIANT 1 — PENNANT  (soft zigzag trailing edge, multi-stop gradient,
+                         literary serif. Default.)
+   ====================================================================== */
+
+body[data-variant="pennant"] .overlay__pennant {
+  font-family: "Fraunces", Georgia, serif;
+  font-variation-settings: "opsz" 144, "wght" 500, "SOFT" 30;
+  font-size: 22px;
+  letter-spacing: -0.005em;
+  padding: 18px 26px 18px 30px;
+}
+
+body[data-variant="pennant"][data-stage="t10"] .overlay__pennant {
   color: #14304f;
   background:
-    /* bottom accent stripe */
     linear-gradient(
       to bottom,
       transparent 0%,
@@ -125,32 +352,26 @@ body[data-stage="t10"] .overlay__pennant {
       #5d8cab 86%,
       transparent 86%
     ),
-    /* diagonal multi-stop */
-      linear-gradient(
-        135deg,
-        #b9d4e3 0%,
-        #dde8ef 32%,
-        #f4efe6 68%,
-        #ecdfc4 100%
-      );
+    linear-gradient(
+      135deg,
+      #b9d4e3 0%,
+      #dde8ef 32%,
+      #f4efe6 68%,
+      #ecdfc4 100%
+    );
 }
 
-body[data-stage="t10"] .overlay__tassel {
-  color: #14304f;
-}
-
-/* T−5 — warm amber + poppy, quicker */
-body[data-stage="t5"] .overlay__pennant {
+body[data-variant="pennant"][data-stage="t5"] .overlay__pennant {
   color: #471309;
   background:
     linear-gradient(
-        to bottom,
-        transparent 0%,
-        transparent 78%,
-        #8a2a18 78%,
-        #8a2a18 86%,
-        transparent 86%
-      ),
+      to bottom,
+      transparent 0%,
+      transparent 78%,
+      #8a2a18 78%,
+      #8a2a18 86%,
+      transparent 86%
+    ),
     linear-gradient(
       135deg,
       #fbd99a 0%,
@@ -160,16 +381,459 @@ body[data-stage="t5"] .overlay__pennant {
     );
 }
 
-body[data-stage="t5"] .overlay__tassel {
-  color: #471309;
+/* ======================================================================
+   VARIANT 2 — RIBBON  (clean horizontal bar, two hairline rules,
+                        Inter sans, lowercase, sleek Linear/Arc feel)
+   ====================================================================== */
+
+body[data-variant="ribbon"] .overlay__pennant {
+  font-family: "Fraunces", Georgia, serif;
+  font-variation-settings: "opsz" 14, "wght" 500, "SOFT" 100;
+  font-size: 18px;
+  letter-spacing: -0.005em;
+  text-transform: lowercase;
+  padding: 14px 28px;
+  border-radius: 4px;
+  background: rgba(254, 252, 246, 0.96);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 }
 
+body[data-variant="ribbon"] .overlay__pennant::before,
+body[data-variant="ribbon"] .overlay__pennant::after {
+  content: "";
+  position: absolute;
+  left: 18px;
+  right: 14px;
+  height: 2px;
+}
+body[data-variant="ribbon"] .overlay__pennant::before {
+  top: 6px;
+}
+body[data-variant="ribbon"] .overlay__pennant::after {
+  bottom: 6px;
+}
+
+body[data-variant="ribbon"][data-stage="t10"] .overlay__pennant {
+  color: #14304f;
+}
+body[data-variant="ribbon"][data-stage="t10"] .overlay__pennant::before,
+body[data-variant="ribbon"][data-stage="t10"] .overlay__pennant::after {
+  background: #5d8cab;
+}
+
+body[data-variant="ribbon"][data-stage="t5"] .overlay__pennant {
+  color: #471309;
+}
+body[data-variant="ribbon"][data-stage="t5"] .overlay__pennant::before,
+body[data-variant="ribbon"][data-stage="t5"] .overlay__pennant::after {
+  background: #c75644;
+}
+
+/* ======================================================================
+   VARIANT 3 — POSTER  (bold two-color split block, uppercase tracking,
+                        postmark dot stamp. Mid-century travel poster.)
+   ====================================================================== */
+
+body[data-variant="poster"] .overlay__pennant {
+  font-family: "Fraunces", Georgia, serif;
+  font-variation-settings: "opsz" 144, "wght" 700, "WONK" 1;
+  font-size: 20px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 16px 56px 18px 24px;
+  border-radius: 2px;
+  border-left: 6px double currentColor;
+}
+
+body[data-variant="poster"] .overlay__pennant::after {
+  content: "";
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 26px;
+  height: 26px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    currentColor 0%,
+    currentColor 18%,
+    transparent 22%
+  );
+  opacity: 0.55;
+}
+
+body[data-variant="poster"][data-stage="t10"] .overlay__pennant {
+  color: #14304f;
+  background: linear-gradient(
+    to bottom,
+    #f4efe6 0%,
+    #f4efe6 55%,
+    #b9d4e3 55%,
+    #b9d4e3 100%
+  );
+}
+
+body[data-variant="poster"][data-stage="t5"] .overlay__pennant {
+  color: #471309;
+  background: linear-gradient(
+    to bottom,
+    #fbd99a 0%,
+    #fbd99a 55%,
+    #e07644 55%,
+    #e07644 100%
+  );
+}
+
+/* ======================================================================
+   VARIANT 4 — MARQUEE  (cinema bulb-bordered black sign, glowing letters)
+   ====================================================================== */
+
+body[data-variant="marquee"] .overlay__pennant {
+  font-family: "Fraunces", Georgia, serif;
+  font-variation-settings: "opsz" 144, "wght" 700;
+  font-size: 22px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 22px 36px;
+  background: #0e1a2b;
+  border-radius: 4px;
+}
+
+body[data-variant="marquee"] .overlay__pennant::before {
+  content: "";
+  position: absolute;
+  inset: 5px 12px;
+  background-image: radial-gradient(
+      circle,
+      #fbd99a 1.6px,
+      transparent 2.2px
+    ),
+    radial-gradient(circle, #fbd99a 1.6px, transparent 2.2px);
+  background-position: 0 0, 0 100%;
+  background-size: 12px 4px, 12px 4px;
+  background-repeat: repeat-x;
+  pointer-events: none;
+}
+
+body[data-variant="marquee"][data-stage="t10"] .overlay__pennant {
+  color: #f4efe6;
+  text-shadow: 0 0 4px rgba(168, 197, 214, 0.8),
+    0 0 12px rgba(168, 197, 214, 0.4);
+  box-shadow: inset 0 0 0 2px #a8c5d6;
+}
+
+body[data-variant="marquee"][data-stage="t5"] .overlay__pennant {
+  color: #fbd99a;
+  text-shadow: 0 0 4px rgba(232, 167, 92, 0.9),
+    0 0 14px rgba(199, 86, 68, 0.5);
+  box-shadow: inset 0 0 0 2px #e8a75c;
+}
+
+/* ======================================================================
+   VARIANT 5 — POSTCARD  (cream paper, airmail stripe panel, italic)
+   ====================================================================== */
+
+body[data-variant="postcard"] .overlay__pennant {
+  font-family: "Fraunces", Georgia, serif;
+  font-variation-settings: "opsz" 144, "wght" 500;
+  font-style: italic;
+  font-size: 20px;
+  letter-spacing: -0.005em;
+  padding: 18px 60px 18px 24px;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      rgba(14, 26, 43, 0.04) 0 3px,
+      transparent 3px 8px
+    ),
+    #fefcf6;
+  border: 1.5px dashed rgba(14, 26, 43, 0.35);
+}
+
+body[data-variant="postcard"] .overlay__pennant::after {
+  content: "";
+  position: absolute;
+  right: 12px;
+  top: 8px;
+  bottom: 8px;
+  width: 28px;
+  background: repeating-linear-gradient(
+    45deg,
+    #c75644 0 4px,
+    transparent 4px 9px,
+    #14304f 9px 13px,
+    transparent 13px 18px
+  );
+  opacity: 0.85;
+}
+
+body[data-variant="postcard"][data-stage="t10"] .overlay__pennant {
+  color: #14304f;
+}
+
+body[data-variant="postcard"][data-stage="t5"] .overlay__pennant {
+  color: #6b2d1b;
+}
+
+/* ======================================================================
+   VARIANT 6 — NEON  (soft glowing outline, dark glass background)
+   ====================================================================== */
+
+body[data-variant="neon"] .overlay__pennant {
+  font-family: "Fraunces", Georgia, serif;
+  font-variation-settings: "opsz" 144, "wght" 400;
+  font-size: 22px;
+  letter-spacing: 0.03em;
+  padding: 18px 32px;
+  background: rgba(14, 26, 43, 0.78);
+}
+
+body[data-variant="neon"][data-stage="t10"] .overlay__pennant {
+  color: #c6e3f1;
+  box-shadow: inset 0 0 0 1.5px #a8c5d6,
+    0 0 12px rgba(168, 197, 214, 0.55);
+  text-shadow: 0 0 4px #a8c5d6, 0 0 10px rgba(168, 197, 214, 0.7),
+    0 0 20px rgba(168, 197, 214, 0.4);
+}
+
+body[data-variant="neon"][data-stage="t5"] .overlay__pennant {
+  color: #fbd99a;
+  box-shadow: inset 0 0 0 1.5px #e8a75c,
+    0 0 12px rgba(232, 167, 92, 0.55);
+  text-shadow: 0 0 4px #e8a75c, 0 0 10px rgba(232, 167, 92, 0.7),
+    0 0 20px rgba(199, 86, 68, 0.4);
+}
+
+/* ======================================================================
+   VARIANT 7 — HOLO  (iridescent shifting rainbow gradient, glassy)
+   ====================================================================== */
+
+body[data-variant="holo"] .overlay__pennant {
+  font-family: "Fraunces", Georgia, serif;
+  font-variation-settings: "opsz" 144, "wght" 600;
+  font-size: 22px;
+  letter-spacing: -0.005em;
+  padding: 18px 32px;
+  color: #14304f;
+  background: linear-gradient(
+    135deg,
+    #ff8ec5 0%,
+    #ffb27a 16%,
+    #f5d674 30%,
+    #91e4a8 48%,
+    #80c8ec 66%,
+    #b39ee0 84%,
+    #ff8ec5 100%
+  );
+  background-size: 220% 220%;
+  animation: holo-shift 6s ease-in-out infinite;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.55);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.55);
+}
+
+@keyframes holo-shift {
+  0%,
+  100% {
+    background-position: 0% 0%;
+  }
+  50% {
+    background-position: 100% 100%;
+  }
+}
+
+/* ======================================================================
+   VARIANT 8 — SYNTHWAVE  (hot pink + cyan retro-future grid)
+   ====================================================================== */
+
+body[data-variant="synthwave"] .overlay__pennant {
+  font-family: "Fraunces", Georgia, serif;
+  font-variation-settings: "opsz" 144, "wght" 700;
+  font-size: 22px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 20px 34px;
+  color: #f5d674;
+  background: linear-gradient(
+    180deg,
+    #1a0033 0%,
+    #4a1a5c 40%,
+    #c70d63 75%,
+    #ff6b35 100%
+  );
+  box-shadow: inset 0 0 0 1.5px #ff2bb1;
+  text-shadow: 0 0 4px #ff2bb1, 0 0 12px rgba(255, 43, 177, 0.6),
+    2px 2px 0 #00fff0;
+}
+
+body[data-variant="synthwave"] .overlay__pennant::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    180deg,
+    transparent 0 5px,
+    rgba(255, 43, 177, 0.18) 5px 6px
+  );
+  pointer-events: none;
+}
+
+/* ======================================================================
+   VARIANT 9 — AURORA  (flowing animated northern-lights gradient)
+   ====================================================================== */
+
+body[data-variant="aurora"] .overlay__pennant {
+  font-family: "Fraunces", Georgia, serif;
+  font-variation-settings: "opsz" 144, "wght" 500;
+  font-size: 22px;
+  letter-spacing: -0.005em;
+  padding: 18px 32px;
+  color: #fefcf6;
+  background: linear-gradient(
+    120deg,
+    #0a1f3d 0%,
+    #1a5f7a 22%,
+    #4ec9b0 42%,
+    #88e0a7 58%,
+    #b8a3e0 78%,
+    #0a1f3d 100%
+  );
+  background-size: 220% 220%;
+  animation: aurora-flow 8s ease-in-out infinite;
+  text-shadow: 0 0 8px rgba(78, 201, 176, 0.65),
+    0 0 18px rgba(184, 163, 224, 0.4);
+}
+
+@keyframes aurora-flow {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* ======================================================================
+   VARIANT 10 — CYBER  (CRT terminal green-on-black with blinking cursor)
+   ====================================================================== */
+
+body[data-variant="cyber"] .overlay__pennant {
+  font-family: "Fraunces", "JetBrains Mono", monospace;
+  font-variation-settings: "opsz" 14, "wght" 500;
+  font-size: 18px;
+  letter-spacing: 0.04em;
+  padding: 18px 28px;
+  color: #00ff88;
+  background: #050a0d;
+  box-shadow: inset 0 0 0 1px #00ff88, 0 0 18px rgba(0, 255, 136, 0.35);
+  text-shadow: 0 0 4px #00ff88, 0 0 12px rgba(0, 255, 136, 0.55);
+}
+
+body[data-variant="cyber"] .overlay__title::before {
+  content: "› ";
+  opacity: 0.7;
+}
+
+body[data-variant="cyber"] .overlay__title::after {
+  content: " _";
+  animation: blink 1s steps(2, end) infinite;
+}
+
+/* faint scanlines */
+body[data-variant="cyber"] .overlay__pennant::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    180deg,
+    transparent 0 3px,
+    rgba(0, 255, 136, 0.05) 3px 4px
+  );
+  pointer-events: none;
+}
+
+@keyframes blink {
+  0%,
+  49% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+/* ======================================================================
+   VARIANT 11 — ADVERT  (vintage skywriter towing a striped banner)
+   Reference: retro airplane advertising banner with thick top/bottom
+   stripe panels and a hand-painted inner field.
+   ====================================================================== */
+
+body[data-variant="advert"] .overlay__pennant {
+  font-family: "Fraunces", Georgia, serif;
+  font-variation-settings: "opsz" 144, "wght" 700;
+  font-size: 24px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 22px 36px 22px 28px;
+  min-width: 320px;
+  background:
+    /* faint diagonal pinstripes inside the panel */
+    repeating-linear-gradient(
+      -12deg,
+      transparent 0 22px,
+      rgba(14, 26, 43, 0.05) 22px 23px
+    ),
+    /* thick stripe + cream middle + thick stripe */
+      linear-gradient(
+        to bottom,
+        var(--advert-stripe, #c75644) 0% 14%,
+        #fefcf6 14% 86%,
+        var(--advert-stripe, #c75644) 86% 100%
+      );
+  text-shadow: 0 1px 0 rgba(254, 252, 246, 0.55);
+}
+
+body[data-variant="advert"][data-stage="t10"] .overlay__pennant {
+  --advert-stripe: #1d3552;
+  color: #1d3552;
+}
+
+body[data-variant="advert"][data-stage="t5"] .overlay__pennant {
+  --advert-stripe: #c75644;
+  color: #8a2a18;
+}
+
+/* tiny rope/grommet hint on the right edge near the plane */
+body[data-variant="advert"] .overlay__pennant::after {
+  content: "";
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  width: 8px;
+  height: 8px;
+  margin-top: -4px;
+  border-radius: 50%;
+  background: rgba(14, 26, 43, 0.4);
+  box-shadow: 0 0 0 2px rgba(254, 252, 246, 0.65);
+  z-index: 3;
+}
+
+/* ======================================================================
+   Stage palette shared bits
+   ====================================================================== */
+
 body[data-stage="t5"] .overlay__stage {
-  animation-duration: 7s;
+  animation-duration: calc(10s * var(--speed-mult, 1));
   top: 26%;
 }
 
-/* === Reduce-motion fallback ============================================ */
+/* ======================================================================
+   Reduce-motion fallback
+   ====================================================================== */
 
 body[data-reduce-motion="1"] .overlay__stage {
   left: 50%;
@@ -179,7 +843,9 @@ body[data-reduce-motion="1"] .overlay__stage {
   justify-content: center;
 }
 
-body[data-reduce-motion="1"] .overlay__plane {
+body[data-reduce-motion="1"] .overlay__plane,
+body[data-reduce-motion="1"] .overlay__rope,
+body[data-reduce-motion="1"] .overlay__wind {
   display: none;
 }
 
@@ -188,6 +854,8 @@ body[data-reduce-motion="1"] .overlay__pennant {
   border-radius: 10px;
   padding: 20px 32px;
   text-align: center;
+  animation: none;
+  transform: none;
 }
 
 @keyframes fade {

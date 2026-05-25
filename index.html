@@ -28,16 +28,148 @@
         </label>
 
         <div class="settings__row settings__row--stacked">
+          <span class="settings__label">Banner speed</span>
+          <div class="speed-picker" id="speed-picker">
+            <button type="button" class="speed-picker__option" data-speed="slow">
+              Slow
+            </button>
+            <button type="button" class="speed-picker__option" data-speed="normal">
+              Normal
+            </button>
+            <button type="button" class="speed-picker__option" data-speed="fast">
+              Fast
+            </button>
+          </div>
+        </div>
+
+        <div class="settings__row settings__row--stacked">
+          <span class="settings__label">Banner style</span>
+          <div class="variant-picker" id="variant-picker">
+            <button
+              type="button"
+              class="variant-picker__option"
+              data-variant="pennant"
+            >
+              <span class="variant-sample variant-sample--pennant">
+                <span class="variant-sample__title">standup</span>
+              </span>
+              <span class="variant-picker__label">Pennant</span>
+            </button>
+            <button
+              type="button"
+              class="variant-picker__option"
+              data-variant="ribbon"
+            >
+              <span class="variant-sample variant-sample--ribbon">
+                <span class="variant-sample__title">standup</span>
+              </span>
+              <span class="variant-picker__label">Ribbon</span>
+            </button>
+            <button
+              type="button"
+              class="variant-picker__option"
+              data-variant="poster"
+            >
+              <span class="variant-sample variant-sample--poster">
+                <span class="variant-sample__title">STANDUP</span>
+              </span>
+              <span class="variant-picker__label">Poster</span>
+            </button>
+            <button
+              type="button"
+              class="variant-picker__option"
+              data-variant="marquee"
+            >
+              <span class="variant-sample variant-sample--marquee">
+                <span class="variant-sample__title">STANDUP</span>
+              </span>
+              <span class="variant-picker__label">Marquee</span>
+            </button>
+            <button
+              type="button"
+              class="variant-picker__option"
+              data-variant="postcard"
+            >
+              <span class="variant-sample variant-sample--postcard">
+                <span class="variant-sample__title">standup</span>
+              </span>
+              <span class="variant-picker__label">Postcard</span>
+            </button>
+            <button
+              type="button"
+              class="variant-picker__option"
+              data-variant="neon"
+            >
+              <span class="variant-sample variant-sample--neon">
+                <span class="variant-sample__title">standup</span>
+              </span>
+              <span class="variant-picker__label">Neon</span>
+            </button>
+            <button
+              type="button"
+              class="variant-picker__option"
+              data-variant="holo"
+            >
+              <span class="variant-sample variant-sample--holo">
+                <span class="variant-sample__title">standup</span>
+              </span>
+              <span class="variant-picker__label">Holo</span>
+            </button>
+            <button
+              type="button"
+              class="variant-picker__option"
+              data-variant="synthwave"
+            >
+              <span class="variant-sample variant-sample--synthwave">
+                <span class="variant-sample__title">STANDUP</span>
+              </span>
+              <span class="variant-picker__label">Synthwave</span>
+            </button>
+            <button
+              type="button"
+              class="variant-picker__option"
+              data-variant="aurora"
+            >
+              <span class="variant-sample variant-sample--aurora">
+                <span class="variant-sample__title">standup</span>
+              </span>
+              <span class="variant-picker__label">Aurora</span>
+            </button>
+            <button
+              type="button"
+              class="variant-picker__option"
+              data-variant="cyber"
+            >
+              <span class="variant-sample variant-sample--cyber">
+                <span class="variant-sample__title">standup</span>
+              </span>
+              <span class="variant-picker__label">Cyber</span>
+            </button>
+            <button
+              type="button"
+              class="variant-picker__option"
+              data-variant="advert"
+            >
+              <span class="variant-sample variant-sample--advert">
+                <span class="variant-sample__title">STANDUP</span>
+              </span>
+              <span class="variant-picker__label">Advert</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="settings__row settings__row--stacked">
           <span class="settings__label">Plane icon</span>
           <div class="plane-picker">
+            <div class="plane-presets" id="plane-presets"></div>
             <div class="plane-picker__preview" id="plane-preview"></div>
             <div class="plane-picker__actions">
               <label class="btn btn--ghost">
-                Upload SVG…
+                Upload image…
                 <input
                   id="plane-upload-input"
                   type="file"
-                  accept=".svg,image/svg+xml"
+                  accept=".svg,.png,.jpg,.jpeg,.webp,image/svg+xml,image/png,image/jpeg,image/webp"
                   hidden
                 />
               </label>
@@ -51,7 +183,7 @@
               </button>
             </div>
             <p class="plane-picker__hint" id="plane-hint">
-              SVG only · replaces the default plane in every banner.
+              Pick a preset above or upload your own SVG / PNG.
             </p>
           </div>
         </div>

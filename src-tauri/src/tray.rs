@@ -19,7 +19,7 @@ pub fn setup(app: &AppHandle) -> tauri::Result<()> {
 
     let _tray = TrayIconBuilder::with_id(TRAY_ID)
         .icon(icon)
-        .icon_as_template(true)
+        .icon_as_template(false)
         .tooltip("Pennoa")
         .menu(&menu)
         .on_menu_event(|app, event| handle_menu(app, event.id().as_ref()))
@@ -167,7 +167,7 @@ fn handle_menu(app: &AppHandle, id: &str) {
         }
         "open" => open_main(app),
         "test" => {
-            if let Err(e) = overlay::show_banner(app, "test banner — pennoa", Stage::T10) {
+            if let Err(e) = overlay::show_banner(app, "Meeting with Aziz in 5 minutes", Stage::T10) {
                 eprintln!("test banner failed: {e}");
             }
         }

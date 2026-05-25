@@ -1,21 +1,20 @@
 use tauri::{AppHandle, WebviewUrl, WebviewWindowBuilder};
 
-const BANNER_HEIGHT: f64 = 200.0;
-const BANNER_TOP_RATIO: f64 = 0.0;
+const BANNER_HEIGHT: f64 = 220.0;
+const BANNER_TOP_OFFSET: f64 = 50.0;
 
 pub fn show_banner(app: &AppHandle, title: &str, stage: Stage) -> tauri::Result<()> {
     let label = format!("overlay-{}", chrono::Utc::now().timestamp_millis());
 
-    let (width, y) = match app.primary_monitor()? {
+    let width = match app.primary_monitor()? {
         Some(monitor) => {
             let size = monitor.size();
             let sf = monitor.scale_factor();
-            let w = (size.width as f64) / sf;
-            let h = (size.height as f64) / sf;
-            (w, h * BANNER_TOP_RATIO)
+            (size.width as f64) / sf
         }
-        None => (1440.0, 0.0),
+        None => 1440.0,
     };
+    let y = BANNER_TOP_OFFSET;
 
     let url = format!(
         "overlay.html?title={}&stage={}",

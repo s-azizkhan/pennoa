@@ -31,6 +31,9 @@ pub fn run() {
             scheduler::start(app.handle().clone());
             enable_autostart_on_first_run(&app.handle());
 
+            #[cfg(target_os = "macos")]
+            app.set_activation_policy(tauri::ActivationPolicy::Accessory);
+
             Ok(())
         })
         .on_window_event(|window, event| {
@@ -49,6 +52,10 @@ pub fn run() {
             commands::get_plane_svg,
             commands::set_plane_svg,
             commands::clear_plane_svg,
+            commands::get_banner_variant,
+            commands::set_banner_variant,
+            commands::get_banner_speed,
+            commands::set_banner_speed,
             accessibility::is_reduce_motion,
         ])
         .run(tauri::generate_context!())

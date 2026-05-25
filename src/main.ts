@@ -4,9 +4,9 @@ import {
   enable as enableAutostart,
   isEnabled as isAutostartEnabled,
 } from "@tauri-apps/plugin-autostart";
-import { DEFAULT_PLANE_SVG } from "./plane";
+import { DEFAULT_PLANE_SVG, PLANE_PRESETS } from "./plane";
 
-const MAX_SVG_BYTES = 256 * 1024;
+const MAX_SVG_BYTES = 2 * 1024 * 1024;
 
 function sanitizeSvg(s: string): string {
   return s
@@ -14,6 +14,28 @@ function sanitizeSvg(s: string): string {
     .replace(/\s+on\w+\s*=\s*"[^"]*"/gi, "")
     .replace(/\s+on\w+\s*=\s*'[^']*'/gi, "")
     .replace(/javascript:/gi, "");
+}
+
+function renderPlaneInto(content: string, container: HTMLElement): void {
+  if (content.startsWith("data:image/")) {
+    const img = new Image();
+    img.src = content;
+    img.alt = "";
+    img.style.maxWidth = "100%";
+    img.style.maxHeight = "100%";
+    container.replaceChildren(img);
+  } else {
+    container.innerHTML = sanitizeSvg(content);
+  }
+}
+
+function readAsDataUrl(file: File): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(String(r.result ?? ""));
+    r.onerror = () => reject(r.error);
+    r.readAsDataURL(file);
+  });
 }
 
 type Repeat = "none" | "daily" | "weekly";
@@ -174,23 +196,126 @@ async function onDelete(): Promise<void> {
   await refresh();
 }
 
+async function initSpeedPicker(): Promise<void> {
+  const picker = $("#speed-picker") as HTMLDivElement;
+  const options = picker.querySelectorAll<HTMLButtonElement>(
+    ".speed-picker__option",
+  );
+
+  function markActive(speed: string) {
+    options.forEach((o) => {
+      o.classList.toggle(
+        "speed-picker__option--active",
+        o.dataset.speed === speed,
+      );
+    });
+  }
+
+  let current = "normal";
+  try {
+    current = (await invoke<string>("get_banner_speed")) || "normal";
+  } catch (e) {
+    console.error("get_banner_speed failed", e);
+  }
+  markActive(current);
+
+  options.forEach((opt) => {
+    opt.addEventListener("click", async () => {
+      const speed = opt.dataset.speed;
+      if (!speed) return;
+      try {
+        await invoke("set_banner_speed", { speed });
+        markActive(speed);
+      } catch (e) {
+        console.error("set_banner_speed failed", e);
+      }
+    });
+  });
+}
+
+async function initVariantPicker(): Promise<void> {
+  const picker = $("#variant-picker") as HTMLDivElement;
+  const options = picker.querySelectorAll<HTMLButtonElement>(
+    ".variant-picker__option",
+  );
+
+  function markActive(variant: string) {
+    options.forEach((o) => {
+      o.classList.toggle(
+        "variant-picker__option--active",
+        o.dataset.variant === variant,
+      );
+    });
+  }
+
+  let current = "pennant";
+  try {
+    current = (await invoke<string>("get_banner_variant")) || "pennant";
+  } catch (e) {
+    console.error("get_banner_variant failed", e);
+  }
+  markActive(current);
+
+  options.forEach((opt) => {
+    opt.addEventListener("click", async () => {
+      const variant = opt.dataset.variant;
+      if (!variant) return;
+      try {
+        await invoke("set_banner_variant", { variant });
+        markActive(variant);
+      } catch (e) {
+        console.error("set_banner_variant failed", e);
+      }
+    });
+  });
+}
+
 async function initPlanePicker(): Promise<void> {
+  const presetGrid = $("#plane-presets") as HTMLDivElement;
   const preview = $("#plane-preview") as HTMLDivElement;
   const input = $("#plane-upload-input") as HTMLInputElement;
   const resetBtn = $("#plane-reset-btn") as HTMLButtonElement;
   const hint = $("#plane-hint") as HTMLParagraphElement;
 
-  const renderPreview = (svg: string, custom: boolean) => {
-    preview.innerHTML = svg;
+  presetGrid.innerHTML = PLANE_PRESETS.map(
+    (p) => `
+      <button
+        type="button"
+        class="plane-preset"
+        data-preset="${p.id}"
+        title="${p.name}"
+      >
+        <span class="plane-preset__icon">${p.svg}</span>
+        <span class="plane-preset__name">${p.name}</span>
+      </button>
+    `,
+  ).join("");
+
+  const presetButtons =
+    presetGrid.querySelectorAll<HTMLButtonElement>(".plane-preset");
+
+  function markActive(svg: string | null) {
+    presetButtons.forEach((b) => {
+      const id = b.dataset.preset;
+      const match = PLANE_PRESETS.find((p) => p.id === id);
+      const isActive = match ? match.svg === svg : false;
+      b.classList.toggle("plane-preset--active", isActive);
+    });
+  }
+
+  const renderPreview = (content: string, custom: boolean) => {
+    renderPlaneInto(content, preview);
     preview.dataset.custom = custom ? "1" : "";
-    resetBtn.hidden = !custom;
+    resetBtn.hidden = !custom && content === DEFAULT_PLANE_SVG;
+    markActive(custom ? null : content);
   };
 
   async function loadCurrent() {
     try {
-      const custom = await invoke<string | null>("get_plane_svg");
-      if (custom && custom.trim().length > 0) {
-        renderPreview(sanitizeSvg(custom), true);
+      const stored = await invoke<string | null>("get_plane_svg");
+      if (stored && stored.trim().length > 0) {
+        const isPreset = PLANE_PRESETS.some((p) => p.svg === stored);
+        renderPreview(stored, !isPreset);
       } else {
         renderPreview(DEFAULT_PLANE_SVG, false);
       }
@@ -200,23 +325,60 @@ async function initPlanePicker(): Promise<void> {
     }
   }
 
+  presetButtons.forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const id = btn.dataset.preset;
+      const preset = PLANE_PRESETS.find((p) => p.id === id);
+      if (!preset) return;
+      try {
+        if (preset.id === PLANE_PRESETS[0].id) {
+          await invoke("clear_plane_svg");
+        } else {
+          await invoke("set_plane_svg", { svg: preset.svg });
+        }
+        renderPreview(preset.svg, false);
+        hint.textContent = `${preset.name} selected.`;
+      } catch (e) {
+        hint.textContent = String(e);
+      }
+    });
+  });
+
   input.addEventListener("change", async () => {
     const file = input.files?.[0];
     input.value = "";
     if (!file) return;
     if (file.size > MAX_SVG_BYTES) {
-      hint.textContent = `Too large (max ${MAX_SVG_BYTES / 1024} KB).`;
+      hint.textContent = `Too large (max ${Math.round(MAX_SVG_BYTES / 1024)} KB).`;
       return;
     }
-    const text = await file.text();
-    if (!text.toLowerCase().includes("<svg")) {
-      hint.textContent = "Not an SVG file.";
+
+    const isSvg =
+      file.type === "image/svg+xml" || /\.svg$/i.test(file.name);
+    const isRaster =
+      file.type === "image/png" ||
+      file.type === "image/jpeg" ||
+      file.type === "image/webp" ||
+      /\.(png|jpe?g|webp)$/i.test(file.name);
+
+    let payload: string;
+    if (isSvg) {
+      const text = await file.text();
+      if (!text.toLowerCase().includes("<svg")) {
+        hint.textContent = "Not a valid SVG.";
+        return;
+      }
+      payload = sanitizeSvg(text);
+    } else if (isRaster) {
+      payload = await readAsDataUrl(file);
+    } else {
+      hint.textContent = "Unsupported format. SVG, PNG, JPEG, or WebP only.";
       return;
     }
-    const clean = sanitizeSvg(text);
+
     try {
-      await invoke("set_plane_svg", { svg: clean });
-      renderPreview(clean, true);
+      await invoke("set_plane_svg", { svg: payload });
+      renderPreview(payload, true);
       hint.textContent = "Custom plane saved.";
     } catch (e) {
       hint.textContent = String(e);
@@ -273,5 +435,7 @@ window.addEventListener("DOMContentLoaded", () => {
   });
   void refresh();
   void initAutostartToggle();
+  void initSpeedPicker();
+  void initVariantPicker();
   void initPlanePicker();
 });
