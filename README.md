@@ -10,6 +10,35 @@ Local-only. No accounts. No telemetry. macOS first; Windows port to follow.
 
 Early scaffold. See `prd.md` for the v1 spec and `BRAND.md` for the brand foundation.
 
+## Install
+
+Grab the latest installer from [Releases](../../releases).
+
+- **macOS** — `Pennoa_x.y.z_universal.dmg` (Apple Silicon + Intel)
+- **Windows** — `Pennoa_x.y.z_x64-setup.exe` (NSIS) or `Pennoa_x.y.z_x64_en-US.msi`
+
+### macOS: "Apple could not verify this app" warning
+
+Pennoa is not yet signed with an Apple Developer ID, so Gatekeeper blocks the first launch with:
+
+> Apple could not verify "Pennoa.app" is free of malware that may harm your Mac or compromise your privacy.
+
+This is expected for unsigned indie apps. Pick one of:
+
+1. **Right-click → Open** on `Pennoa.app` in `/Applications`, then confirm the prompt. Subsequent launches work normally.
+2. **System Settings → Privacy & Security**, scroll down, click **Open Anyway** next to the Pennoa entry.
+3. **Terminal** — strip the quarantine attribute:
+
+   ```bash
+   xattr -dr com.apple.quarantine /Applications/Pennoa.app
+   ```
+
+Proper code signing + notarization is on the roadmap (requires an Apple Developer Program membership).
+
+### Windows: SmartScreen warning
+
+Pennoa is not yet signed with an EV code-signing certificate, so SmartScreen may show **"Windows protected your PC"** on first run. Click **More info → Run anyway**.
+
 ## Develop
 
 Prereqs (shared): [Bun](https://bun.sh) (latest), Rust stable (`~/.cargo/bin` on PATH).
