@@ -1,4 +1,9 @@
 import { invoke } from "@tauri-apps/api/core";
+import {
+  disable as disableAutostart,
+  enable as enableAutostart,
+  isEnabled as isAutostartEnabled,
+} from "@tauri-apps/plugin-autostart";
 
 type Repeat = "none" | "daily" | "weekly";
 
@@ -158,6 +163,29 @@ async function onDelete(): Promise<void> {
   await refresh();
 }
 
+async function initAutostartToggle(): Promise<void> {
+  const toggle = $("#autostart-toggle") as HTMLInputElement;
+  try {
+    toggle.checked = await isAutostartEnabled();
+  } catch (e) {
+    console.error("autostart status failed", e);
+    toggle.disabled = true;
+    return;
+  }
+  toggle.addEventListener("change", async () => {
+    try {
+      if (toggle.checked) {
+        await enableAutostart();
+      } else {
+        await disableAutostart();
+      }
+    } catch (e) {
+      console.error("autostart toggle failed", e);
+      toggle.checked = !toggle.checked;
+    }
+  });
+}
+
 window.addEventListener("DOMContentLoaded", () => {
   $("#add-btn").addEventListener("click", () => openModal());
   $("#cancel-btn").addEventListener("click", closeModal);
@@ -171,4 +199,5 @@ window.addEventListener("DOMContentLoaded", () => {
     if (e.target === e.currentTarget) closeModal();
   });
   void refresh();
+  void initAutostartToggle();
 });

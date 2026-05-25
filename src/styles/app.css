@@ -257,3 +257,29 @@ select {
 .btn--danger:hover {
   background: rgba(199, 86, 68, 0.08);
 }
+
+/* Settings */
+.settings {
+  margin-top: 28px;
+  padding-top: 18px;
+  border-top: 1px solid var(--hairline);
+}
+
+.settings__row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.settings__row input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+
+.settings__label {
+  font-size: 13px;
+  color: var(--ink-soft);
+}
