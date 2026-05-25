@@ -1,26 +1,50 @@
 use crate::model::{Meeting, RepeatRule};
 use crate::overlay::{self, Stage};
 use crate::store::Store;
+use crate::tray;
 use chrono::{DateTime, Duration, Utc};
 use std::collections::HashSet;
 use std::sync::{Arc, Mutex};
 use tauri::{AppHandle, Manager};
 
 const TICK_SECS: u64 = 15;
-// Don't fire reminders whose scheduled fire-time is older than this.
 const STALE_WINDOW_SECS: i64 = 60;
-// Cap recurrence advance to avoid pathological loops on far-past anchors.
 const MAX_RECURRENCE_ITERATIONS: usize = 5_000;
 
 pub struct Scheduler {
     fired: Mutex<HashSet<(uuid::Uuid, DateTime<Utc>, i64)>>,
+    paused_until: Mutex<Option<DateTime<Utc>>>,
 }
 
 impl Scheduler {
     pub fn new() -> Self {
         Self {
             fired: Mutex::new(HashSet::new()),
+            paused_until: Mutex::new(None),
         }
+    }
+
+    pub fn pause_until(&self, t: DateTime<Utc>) {
+        *self.paused_until.lock().unwrap() = Some(t);
+    }
+
+    pub fn resume(&self) {
+        *self.paused_until.lock().unwrap() = None;
+    }
+
+    pub fn paused_until(&self) -> Option<DateTime<Utc>> {
+        let mut g = self.paused_until.lock().unwrap();
+        if let Some(t) = *g {
+            if t > Utc::now() {
+                return Some(t);
+            }
+            *g = None;
+        }
+        None
+    }
+
+    pub fn is_paused(&self) -> bool {
+        self.paused_until().is_some()
     }
 
     fn next_occurrence(m: &Meeting, now: DateTime<Utc>) -> Option<DateTime<Utc>> {
@@ -45,6 +69,9 @@ impl Scheduler {
     }
 
     pub fn tick(&self, app: &AppHandle) {
+        if self.is_paused() {
+            return;
+        }
         let now = Utc::now();
         let store = app.state::<Store>();
         for m in store.list() {
@@ -62,7 +89,6 @@ impl Scheduler {
                     continue;
                 }
                 if fire_time + Duration::seconds(STALE_WINDOW_SECS) < now {
-                    // Missed it — mark fired so we don't reconsider every tick.
                     self.fired.lock().unwrap().insert(key);
                     continue;
                 }
@@ -84,11 +110,11 @@ pub fn start(app: AppHandle) {
     let tick_app = app.clone();
     tauri::async_runtime::spawn(async move {
         let mut interval = tokio::time::interval(std::time::Duration::from_secs(TICK_SECS));
-        // First tick fires immediately; consume it so startup doesn't spam.
-        interval.tick().await;
+        interval.tick().await; // immediate first tick — consume
         loop {
             interval.tick().await;
             scheduler.tick(&tick_app);
+            tray::refresh(&tick_app);
         }
     });
 }
