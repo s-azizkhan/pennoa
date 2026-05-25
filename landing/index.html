@@ -1,0 +1,664 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Pennoa — meeting reminders that respect your flow</title>
+    <meta
+      name="description"
+      content="A small airplane drifts across your screen before every meeting. Local-only. No accounts. No telemetry. Free, open-source. macOS and Windows."
+    />
+    <meta property="og:title" content="Pennoa" />
+    <meta
+      property="og:description"
+      content="Meeting reminders that respect your flow."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+
+    <header class="nav">
+      <a class="nav__brand" href="#">
+        <span class="nav__mark" aria-hidden="true">✈</span>
+        <span class="nav__name">pennoa</span>
+      </a>
+      <nav class="nav__links">
+        <a href="#how">how it works</a>
+        <a href="#styles">styles</a>
+        <a href="#aircraft">aircraft</a>
+        <a href="#privacy">privacy</a>
+        <a
+          href="https://github.com/s-azizkhan/pennoa"
+          target="_blank"
+          rel="noopener"
+          >github</a
+        >
+        <a
+          href="https://github.com/s-azizkhan/pennoa/releases/latest"
+          target="_blank"
+          rel="noopener"
+          class="nav__cta"
+          >download</a
+        >
+      </nav>
+    </header>
+
+    <main id="main">
+      <!-- ================================================ HERO -->
+      <section class="hero">
+        <div class="hero__copy">
+          <p class="eyebrow">macOS · Windows · free · open-source</p>
+          <h1 class="display">
+            a small airplane drifts across your screen
+            <span class="display__accent">before every meeting.</span>
+          </h1>
+          <p class="lede">
+            Ten and five minutes before your next call, a banner flies past at
+            the top of your screen and is gone in nine seconds. You keep
+            working. You never miss a meeting.
+          </p>
+          <div class="cta-row">
+            <a
+              class="btn btn--primary"
+              href="https://github.com/s-azizkhan/pennoa/releases/latest"
+              target="_blank"
+              rel="noopener"
+            >
+              <span>Download for macOS</span>
+              <span class="btn__arrow">→</span>
+            </a>
+            <a
+              class="btn btn--ghost"
+              href="https://github.com/s-azizkhan/pennoa/releases/latest"
+              target="_blank"
+              rel="noopener"
+              >Windows</a
+            >
+            <a class="btn btn--text" href="#how">see how it works</a>
+          </div>
+          <p class="hero__small">
+            100% local · no accounts · no telemetry · 26 MB
+          </p>
+        </div>
+
+        <!-- Hero canvas: live drifting plane + banner -->
+        <div class="hero__stage" aria-hidden="true">
+          <div class="hero__sky">
+            <div class="hero__cloud hero__cloud--1"></div>
+            <div class="hero__cloud hero__cloud--2"></div>
+            <div class="hero__cloud hero__cloud--3"></div>
+
+            <!-- wind streaks -->
+            <div class="hero__wind">
+              <span style="--y: 18%; --w: 70px; --d: 1.6s; --dl: 0s"></span>
+              <span style="--y: 32%; --w: 90px; --d: 1.3s; --dl: 0.4s"></span>
+              <span style="--y: 48%; --w: 60px; --d: 1.8s; --dl: 0.8s"></span>
+              <span style="--y: 64%; --w: 100px; --d: 1.5s; --dl: 0.2s"></span>
+              <span style="--y: 78%; --w: 75px; --d: 1.7s; --dl: 0.6s"></span>
+            </div>
+
+            <div class="hero__drift">
+              <div class="hero__pennant">
+                <span>standup with the team</span>
+              </div>
+              <svg
+                class="hero__rope"
+                viewBox="0 0 56 32"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <path
+                  d="M 0 6 L 18 16 L 0 26 M 18 16 L 56 16"
+                  fill="none"
+                  stroke="#14304f"
+                  stroke-width="1.6"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  opacity="0.85"
+                />
+              </svg>
+              <svg
+                class="hero__plane"
+                viewBox="0 0 280 130"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <defs>
+                  <linearGradient id="hp-body" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#fefcf6" />
+                    <stop offset="55%" stop-color="#efe3c7" />
+                    <stop offset="100%" stop-color="#d4bf90" />
+                  </linearGradient>
+                  <linearGradient id="hp-wt" x1="0" y1="0" x2="0.4" y2="1">
+                    <stop offset="0%" stop-color="#f6c374" />
+                    <stop offset="60%" stop-color="#d68a30" />
+                    <stop offset="100%" stop-color="#a55f15" />
+                  </linearGradient>
+                  <linearGradient id="hp-wb" x1="0" y1="0" x2="0.5" y2="1">
+                    <stop offset="0%" stop-color="#e8a75c" />
+                    <stop offset="100%" stop-color="#8c4f0e" />
+                  </linearGradient>
+                  <linearGradient id="hp-tail" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#e8744f" />
+                    <stop offset="100%" stop-color="#922b1d" />
+                  </linearGradient>
+                </defs>
+                <path
+                  d="M 178 24 Q 198 8, 214 22 L 220 64 L 188 60 Z"
+                  fill="url(#hp-tail)"
+                />
+                <path
+                  d="M 188 62 Q 220 58, 248 60 L 252 72 Q 218 74, 192 74 Z"
+                  fill="#7a2415"
+                />
+                <path
+                  d="M 50 66 Q 92 52, 170 54 L 232 62 Q 254 66, 254 74 Q 254 80, 232 83 L 170 84 Q 92 86, 50 76 Z"
+                  fill="url(#hp-body)"
+                />
+                <g fill="#1d3552">
+                  <ellipse cx="80" cy="69" rx="3" ry="3.5" />
+                  <ellipse cx="96" cy="68" rx="3" ry="3.5" />
+                  <ellipse cx="112" cy="67.5" rx="3" ry="3.5" />
+                  <ellipse cx="128" cy="67" rx="3" ry="3.5" />
+                  <ellipse cx="144" cy="66.5" rx="3" ry="3.5" />
+                  <ellipse cx="160" cy="66.5" rx="3" ry="3.5" />
+                  <ellipse cx="176" cy="66.5" rx="3" ry="3.5" />
+                </g>
+                <path d="M 244 64 Q 260 70, 248 78 L 230 74 Z" fill="#0e1a2b" />
+                <path
+                  d="M 108 60 L 72 14 L 122 18 L 152 58 Z"
+                  fill="url(#hp-wt)"
+                />
+                <path
+                  d="M 114 78 L 78 118 L 130 116 L 152 80 Z"
+                  fill="url(#hp-wb)"
+                />
+                <ellipse cx="118" cy="100" rx="11" ry="5" fill="#0e1a2b" />
+                <ellipse cx="113" cy="99" rx="4" ry="2.2" fill="#e8a75c" />
+                <path
+                  d="M 60 79 Q 130 75, 230 80"
+                  stroke="#c75644"
+                  stroke-width="2.4"
+                  fill="none"
+                />
+              </svg>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================ MANIFESTO -->
+      <section class="manifesto">
+        <div class="container">
+          <p class="eyebrow">the alert, reframed</p>
+          <h2 class="h2">
+            standard notifications are the noise.<br />
+            pennoa is the moment.
+          </h2>
+          <div class="compare">
+            <div class="compare__col compare__col--bad">
+              <p class="compare__label">corner pop-up</p>
+              <ul class="compare__list">
+                <li>steals focus the instant it appears</li>
+                <li>must be dismissed or clicked</li>
+                <li>cloud-backed by default</li>
+                <li>generic system chrome</li>
+                <li>trained your hand into a reflex</li>
+              </ul>
+            </div>
+            <div class="compare__col compare__col--good">
+              <p class="compare__label">pennoa</p>
+              <ul class="compare__list">
+                <li>drifts at the periphery — zero clicks</li>
+                <li>pointer and keyboard pass through</li>
+                <li>fully local, runs offline</li>
+                <li>cinematic motion across the full screen</li>
+                <li>gone in nine seconds, every time</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================ HOW IT WORKS -->
+      <section id="how" class="how">
+        <div class="container">
+          <p class="eyebrow">how it works</p>
+          <h2 class="h2">three fields. two pulses. one quiet plane.</h2>
+
+          <div class="steps">
+            <article class="step">
+              <span class="step__num">01</span>
+              <h3 class="step__title">add a meeting</h3>
+              <p class="step__body">
+                Title, date, time. Done in under fifteen seconds, keyboard
+                only. Daily and weekly repeat built in.
+              </p>
+              <div class="step__visual step__visual--form">
+                <span class="ph">standup with the team</span>
+                <span class="ph ph--small">tue · 09:30</span>
+              </div>
+            </article>
+
+            <article class="step">
+              <span class="step__num">02</span>
+              <h3 class="step__title">T−10 · the calm pulse</h3>
+              <p class="step__body">
+                Ten minutes before, a sky-and-parchment banner drifts slowly
+                across your screen. You read it. You keep typing. You smile.
+              </p>
+              <div class="step__visual">
+                <div class="mini-banner mini-banner--t10">
+                  <span>standup with the team</span>
+                </div>
+              </div>
+            </article>
+
+            <article class="step">
+              <span class="step__num">03</span>
+              <h3 class="step__title">T−5 · the warm pulse</h3>
+              <p class="step__body">
+                Five minutes before, the same banner returns in amber and
+                poppy, a little quicker and lower. Time to wrap.
+              </p>
+              <div class="step__visual">
+                <div class="mini-banner mini-banner--t5">
+                  <span>standup with the team</span>
+                </div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================ STYLES -->
+      <section id="styles" class="styles">
+        <div class="container">
+          <p class="eyebrow">eleven styles</p>
+          <h2 class="h2">a banner for every mood.</h2>
+          <p class="lede lede--center">
+            From a heraldic pennant to a humming neon sign. Switch in one
+            click. Your meeting; your aesthetic.
+          </p>
+
+          <div class="style-grid">
+            <div class="style-card style-card--pennant">
+              <div class="style-card__sample">
+                <span>standup</span>
+              </div>
+              <span class="style-card__name">Pennant</span>
+            </div>
+            <div class="style-card style-card--ribbon">
+              <div class="style-card__sample">
+                <span>standup</span>
+              </div>
+              <span class="style-card__name">Ribbon</span>
+            </div>
+            <div class="style-card style-card--poster">
+              <div class="style-card__sample">
+                <span>STANDUP</span>
+              </div>
+              <span class="style-card__name">Poster</span>
+            </div>
+            <div class="style-card style-card--marquee">
+              <div class="style-card__sample">
+                <span>STANDUP</span>
+              </div>
+              <span class="style-card__name">Marquee</span>
+            </div>
+            <div class="style-card style-card--postcard">
+              <div class="style-card__sample">
+                <span>standup</span>
+              </div>
+              <span class="style-card__name">Postcard</span>
+            </div>
+            <div class="style-card style-card--neon">
+              <div class="style-card__sample">
+                <span>standup</span>
+              </div>
+              <span class="style-card__name">Neon</span>
+            </div>
+            <div class="style-card style-card--holo">
+              <div class="style-card__sample">
+                <span>standup</span>
+              </div>
+              <span class="style-card__name">Holo</span>
+            </div>
+            <div class="style-card style-card--synthwave">
+              <div class="style-card__sample">
+                <span>STANDUP</span>
+              </div>
+              <span class="style-card__name">Synthwave</span>
+            </div>
+            <div class="style-card style-card--aurora">
+              <div class="style-card__sample">
+                <span>standup</span>
+              </div>
+              <span class="style-card__name">Aurora</span>
+            </div>
+            <div class="style-card style-card--cyber">
+              <div class="style-card__sample">
+                <span>› standup</span>
+              </div>
+              <span class="style-card__name">Cyber</span>
+            </div>
+            <div class="style-card style-card--advert">
+              <div class="style-card__sample">
+                <span>STANDUP</span>
+              </div>
+              <span class="style-card__name">Advert</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================ AIRCRAFT -->
+      <section id="aircraft" class="aircraft">
+        <div class="container">
+          <p class="eyebrow">eleven aircraft</p>
+          <h2 class="h2">pick your plane. or fly your own.</h2>
+          <p class="lede lede--center">
+            Pan Am, paper, Concorde, glider, stealth, helicopter, rocket —
+            and seven more. Drag in any SVG or PNG to make the banner yours.
+          </p>
+
+          <div class="aircraft-grid">
+            <figure class="aircraft-card">
+              <svg viewBox="0 0 280 130" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <defs>
+                  <linearGradient id="a1-body" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#fefcf6"/>
+                    <stop offset="100%" stop-color="#d4bf90"/>
+                  </linearGradient>
+                </defs>
+                <path d="M 178 24 Q 198 8, 214 22 L 220 64 L 188 60 Z" fill="#922b1d"/>
+                <path d="M 50 66 Q 92 52, 170 54 L 232 62 Q 254 66, 254 74 Q 254 80, 232 83 L 170 84 Q 92 86, 50 76 Z" fill="url(#a1-body)"/>
+                <path d="M 108 60 L 72 14 L 122 18 L 152 58 Z" fill="#d68a30"/>
+                <path d="M 114 78 L 78 118 L 130 116 L 152 80 Z" fill="#e8a75c"/>
+                <ellipse cx="118" cy="100" rx="11" ry="5" fill="#0e1a2b"/>
+                <path d="M 244 64 Q 260 70, 248 78 L 230 74 Z" fill="#0e1a2b"/>
+              </svg>
+              <figcaption>Pan Am</figcaption>
+            </figure>
+
+            <figure class="aircraft-card">
+              <svg viewBox="0 0 220 120" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 10 70 L 200 30 L 200 50 L 80 80 Z" fill="#fefcf6" stroke="#5e4f25" stroke-width="0.8"/>
+                <path d="M 80 80 L 200 50 L 200 75 L 130 100 Z" fill="#d4c89e" stroke="#5e4f25" stroke-width="0.8"/>
+              </svg>
+              <figcaption>Paper</figcaption>
+            </figure>
+
+            <figure class="aircraft-card">
+              <svg viewBox="0 0 260 100" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 16 52 Q 80 42, 200 46 L 230 52 Q 240 56, 230 60 L 200 64 Q 80 68, 16 58 Z" fill="#a8c5d6"/>
+                <path d="M 188 28 L 216 18 L 224 50 L 196 50 Z" fill="#2a4a6e"/>
+                <path d="M 86 50 L 56 78 L 140 76 L 154 56 Z" fill="#5e7c9a"/>
+                <ellipse cx="110" cy="76" rx="14" ry="5" fill="#0e1a2b"/>
+              </svg>
+              <figcaption>Jet</figcaption>
+            </figure>
+
+            <figure class="aircraft-card">
+              <svg viewBox="0 0 220 150" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 16 88 L 200 86 L 195 100 L 22 100 Z" fill="#c75644"/>
+                <path d="M 24 76 Q 100 66, 180 70 L 200 78 L 200 88 L 180 90 Q 100 96, 24 88 Z" fill="#e8a75c"/>
+                <path d="M 18 36 L 188 34 L 184 48 L 24 48 Z" fill="#c75644"/>
+                <line x1="50" y1="50" x2="50" y2="76" stroke="#5e3608" stroke-width="2"/>
+                <line x1="150" y1="50" x2="150" y2="78" stroke="#5e3608" stroke-width="2"/>
+              </svg>
+              <figcaption>Biplane</figcaption>
+            </figure>
+
+            <figure class="aircraft-card">
+              <svg viewBox="0 0 260 100" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 14 50 L 220 44 L 240 52 L 220 60 L 14 54 Z" fill="#3a4856"/>
+                <path d="M 70 52 L 100 88 L 168 80 L 142 58 Z" fill="#2a3540"/>
+                <path d="M 70 52 L 100 14 L 168 22 L 142 50 Z" fill="#2a3540"/>
+                <path d="M 178 47 L 215 48 L 220 52 L 178 52 Z" fill="#0a0f15"/>
+              </svg>
+              <figcaption>Fighter</figcaption>
+            </figure>
+
+            <figure class="aircraft-card">
+              <svg viewBox="0 0 280 90" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 18 46 Q 110 38, 230 38 L 256 44 Q 262 46, 256 48 L 230 52 Q 110 52, 18 48 Z" fill="#fefcf6"/>
+                <path d="M 60 46 L 92 76 L 184 70 L 200 50 Z" fill="#a8c5d6"/>
+                <ellipse cx="120" cy="62" rx="26" ry="3.5" fill="#1d3552"/>
+                <ellipse cx="160" cy="62" rx="26" ry="3.5" fill="#1d3552"/>
+              </svg>
+              <figcaption>Concorde</figcaption>
+            </figure>
+
+            <figure class="aircraft-card">
+              <svg viewBox="0 0 300 80" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 30 38 L 290 36 L 290 44 L 30 46 Z" fill="#fefcf6" stroke="#4d7a9c" stroke-width="0.5"/>
+                <ellipse cx="160" cy="42" rx="80" ry="7" fill="#fefcf6" stroke="#4d7a9c" stroke-width="0.6"/>
+                <ellipse cx="220" cy="40" rx="14" ry="4" fill="#1d3552"/>
+                <path d="M 84 42 L 60 26 L 70 50 Z" fill="#4d7a9c"/>
+              </svg>
+              <figcaption>Glider</figcaption>
+            </figure>
+
+            <figure class="aircraft-card">
+              <svg viewBox="0 0 220 130" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 28 44 L 184 42 L 184 56 L 28 58 Z" fill="#e8a75c"/>
+                <path d="M 46 68 Q 110 62, 170 66 L 184 78 L 170 90 Q 110 94, 46 86 Z" fill="#fefcf6"/>
+                <line x1="55" y1="56" x2="55" y2="82" stroke="#5e3608" stroke-width="2"/>
+                <line x1="150" y1="56" x2="150" y2="82" stroke="#5e3608" stroke-width="2"/>
+              </svg>
+              <figcaption>Cessna</figcaption>
+            </figure>
+
+            <figure class="aircraft-card">
+              <svg viewBox="0 0 280 100" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 16 60 L 80 32 L 140 24 L 200 32 L 254 58 Q 246 64, 228 62 L 200 56 Q 170 50, 140 46 Q 110 50, 80 56 L 60 60 Q 36 64, 16 60 Z" fill="#1f2832"/>
+                <ellipse cx="140" cy="30" rx="18" ry="3.5" fill="#06090c"/>
+              </svg>
+              <figcaption>Stealth</figcaption>
+            </figure>
+
+            <figure class="aircraft-card">
+              <svg viewBox="0 0 280 100" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 86 30 L 210 30 Q 240 30, 256 50 Q 240 70, 210 70 L 86 70 Z" fill="#fefcf6"/>
+                <rect x="92" y="46" width="120" height="8" fill="#c75644"/>
+                <circle cx="140" cy="50" r="11" fill="#1d3552"/>
+                <path d="M 86 30 L 70 14 L 100 30 Z" fill="#c75644"/>
+                <path d="M 86 70 L 70 86 L 100 70 Z" fill="#c75644"/>
+              </svg>
+              <figcaption>Rocket</figcaption>
+            </figure>
+
+            <figure class="aircraft-card">
+              <svg viewBox="0 0 280 180" xmlns="http://www.w3.org/2000/svg">
+                <path d="M 70 102 L 10 96 L 10 112 L 70 116 Z" fill="#d68a30"/>
+                <ellipse cx="138" cy="110" rx="70" ry="34" fill="#d68a30"/>
+                <path d="M 96 108 Q 96 74, 138 72 Q 188 74, 196 108 L 196 122 L 96 122 Z" fill="#c6dcec"/>
+                <circle cx="158" cy="92" r="9" fill="#f1c79a"/>
+                <path d="M 149 90 Q 149 80, 158 78 Q 167 80, 167 90 Z" fill="#1d3552"/>
+                <rect x="136" y="60" width="4" height="14" fill="#1d3552"/>
+                <ellipse cx="138" cy="60" rx="100" ry="3" fill="#1d3552">
+                  <animateTransform attributeName="transform" type="rotate" from="0 138 60" to="360 138 60" dur="0.18s" repeatCount="indefinite"/>
+                </ellipse>
+                <ellipse cx="138" cy="60" rx="100" ry="3" fill="#1d3552" opacity="0.5">
+                  <animateTransform attributeName="transform" type="rotate" from="60 138 60" to="420 138 60" dur="0.18s" repeatCount="indefinite"/>
+                </ellipse>
+                <line x1="58" y1="148" x2="190" y2="148" stroke="#1d3552" stroke-width="4" stroke-linecap="round"/>
+              </svg>
+              <figcaption>Heli</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================ PRIVACY -->
+      <section id="privacy" class="privacy">
+        <div class="container">
+          <p class="eyebrow">data philosophy</p>
+          <h2 class="display display--med">
+            local. private. open.<br />
+            <span class="display__accent">always.</span>
+          </h2>
+          <div class="privacy-grid">
+            <div class="privacy-card">
+              <span class="privacy-card__num">0</span>
+              <p class="privacy-card__label">network calls</p>
+              <p>
+                Pennoa runs identically with the network unplugged. There is
+                no API to phone home to.
+              </p>
+            </div>
+            <div class="privacy-card">
+              <span class="privacy-card__num">0</span>
+              <p class="privacy-card__label">accounts</p>
+              <p>
+                No sign-up, no email, no ID. Open the app, add a meeting, see
+                a banner. That is the whole flow.
+              </p>
+            </div>
+            <div class="privacy-card">
+              <span class="privacy-card__num">0</span>
+              <p class="privacy-card__label">telemetry</p>
+              <p>
+                Nothing leaves your machine. Not a crash report, not a
+                feature ping, not a usage metric.
+              </p>
+            </div>
+            <div class="privacy-card">
+              <span class="privacy-card__num">1</span>
+              <p class="privacy-card__label">file</p>
+              <p>
+                Your meetings live in a single human-readable JSON file in
+                your app-data directory. Back it up. Diff it. Own it.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================ ROADMAP -->
+      <section class="roadmap">
+        <div class="container">
+          <p class="eyebrow">roadmap</p>
+          <h2 class="h2">where pennoa is going.</h2>
+          <ol class="phases">
+            <li class="phase phase--done">
+              <span class="phase__num">phase 1</span>
+              <h3>core experience</h3>
+              <p>
+                Manual add. Banner overlay. T−10 and T−5 triggers. Menu bar
+                icon. Auto-start at login. Eleven banner styles. Eleven
+                aircraft. Reduce-motion fallback.
+              </p>
+            </li>
+            <li class="phase phase--next">
+              <span class="phase__num">phase 2</span>
+              <h3>import &amp; control</h3>
+              <p>
+                <code>.ics</code> drag-and-drop. Pause for an hour or until
+                tomorrow. Daily / weekly repeats. Custom reminder intervals.
+              </p>
+            </li>
+            <li class="phase">
+              <span class="phase__num">phase 3</span>
+              <h3>polish</h3>
+              <p>
+                Subtle sound cues. Next-up tray badges. Focus / Do Not
+                Disturb awareness. Sparkle and WinSparkle auto-update.
+              </p>
+            </li>
+            <li class="phase">
+              <span class="phase__num">phase 4</span>
+              <h3>sync &amp; advanced recurrence</h3>
+              <p>
+                CalDAV without a third-party middleman. Complex recurrence
+                (every third Tuesday). Multi-device sync via a local shared
+                folder.
+              </p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- ================================================ DOWNLOAD -->
+      <section id="download" class="download">
+        <div class="container">
+          <p class="eyebrow">free · open-source · under 30 MB</p>
+          <h2 class="display">
+            never miss another meeting.<br />
+            <span class="display__accent">never break flow.</span>
+          </h2>
+          <div class="download__row">
+            <a
+              class="dl-btn"
+              href="https://github.com/s-azizkhan/pennoa/releases/latest"
+              target="_blank"
+              rel="noopener"
+            >
+              <span class="dl-btn__icon"></span>
+              <span class="dl-btn__copy">
+                <span class="dl-btn__small">Download for</span>
+                <span class="dl-btn__big">macOS</span>
+              </span>
+            </a>
+            <a
+              class="dl-btn dl-btn--win"
+              href="https://github.com/s-azizkhan/pennoa/releases/latest"
+              target="_blank"
+              rel="noopener"
+            >
+              <span class="dl-btn__icon"></span>
+              <span class="dl-btn__copy">
+                <span class="dl-btn__small">Download for</span>
+                <span class="dl-btn__big">Windows</span>
+              </span>
+            </a>
+          </div>
+          <p class="download__small">
+            v1.0 · macOS 11+ · Windows 10+ · MIT licensed
+          </p>
+          <p class="download__github">
+            view source ·
+            <a
+              href="https://github.com/s-azizkhan/pennoa"
+              target="_blank"
+              rel="noopener"
+              >github.com/s-azizkhan/pennoa</a
+            >
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container footer__inner">
+        <div>
+          <span class="footer__mark">✈</span>
+          <span class="footer__name">pennoa</span>
+        </div>
+        <p class="footer__tagline">
+          meeting reminders that respect your flow.
+        </p>
+        <p class="footer__small">
+          © Pennoa · free, open-source, local-only ·
+          <a
+            href="https://github.com/s-azizkhan/pennoa"
+            target="_blank"
+            rel="noopener"
+            >github</a
+          >
+          ·
+          <a
+            href="https://github.com/s-azizkhan/pennoa/releases/latest"
+            target="_blank"
+            rel="noopener"
+            >releases</a
+          >
+        </p>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>

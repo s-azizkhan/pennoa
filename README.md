@@ -12,13 +12,13 @@ Early scaffold. See `prd.md` for the v1 spec and `BRAND.md` for the brand founda
 
 ## Develop
 
-Prereqs (shared): Node 20+, Rust stable (`~/.cargo/bin` on PATH).
+Prereqs (shared): [Bun](https://bun.sh) (latest), Rust stable (`~/.cargo/bin` on PATH).
 - macOS: Xcode Command Line Tools.
 - Windows: Visual Studio 2022 Build Tools (Desktop development with C++) and the WebView2 runtime (preinstalled on Win11; download from Microsoft on Win10).
 
 ```bash
-npm install
-npm run tauri:dev
+bun install
+bun run tauri:dev
 ```
 
 ## Build
@@ -26,20 +26,26 @@ npm run tauri:dev
 ### macOS
 
 ```bash
-npm run tauri:build
+bun run tauri:build
 # .dmg lands in src-tauri/target/release/bundle/dmg/
 ```
 
 ### Windows
 
 ```powershell
-npm install
-npm run tauri:build
+bun install
+bun run tauri:build
 # .msi  → src-tauri\target\release\bundle\msi\
 # .exe  → src-tauri\target\release\bundle\nsis\
 ```
 
 Cross-compiling macOS → Windows is **not** supported here (tauri-winres needs `llvm-rc`); build on a Windows host or via GitHub Actions on `windows-latest`.
+
+## Releases (CI)
+
+A GitHub Actions workflow at `.github/workflows/release.yml` runs on every push to `master` (also dispatchable manually). It builds on `macos-latest` (Universal Apple Silicon + Intel) and `windows-latest` in parallel via `tauri-apps/tauri-action`, then publishes a release tagged `vX.Y.Z` reading the version from `src-tauri/tauri.conf.json`. Subsequent pushes for the same version update the existing release's assets.
+
+To cut a new release: bump the `version` field in `src-tauri/tauri.conf.json`, merge to `master`. The workflow uses `GITHUB_TOKEN` (no extra secrets needed) and requires `contents: write` permission, which is set in the workflow.
 
 ## Platform notes
 

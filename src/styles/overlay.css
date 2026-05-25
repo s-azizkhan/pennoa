@@ -135,10 +135,18 @@ body[data-stage="t5"] .overlay__wind-dot {
   display: flex;
   align-items: center;
   transform: translateX(-55%);
+  perspective: 800px;
   will-change: transform;
   animation: drift calc(13s * var(--speed-mult, 1)) linear forwards;
   filter: drop-shadow(0 12px 28px rgba(14, 26, 43, 0.22))
     drop-shadow(0 3px 6px rgba(14, 26, 43, 0.18));
+}
+
+.overlay__defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  pointer-events: none;
 }
 
 body[data-speed="slow"] {
@@ -165,8 +173,10 @@ body[data-speed="fast"] {
   white-space: nowrap;
   min-width: 280px;
   transform-origin: right center;
-  animation: ripple 2.8s ease-in-out infinite;
-  will-change: transform;
+  transform-style: preserve-3d;
+  animation: ripple 3.4s ease-in-out infinite;
+  will-change: transform, filter;
+  filter: url(#wave-filter);
   /* Soft zigzag trailing (left) edge — shared by every variant. */
   clip-path: polygon(
     7px 0,
@@ -315,16 +325,19 @@ body[data-variant="aurora"] .overlay__rope {
 @keyframes ripple {
   0%,
   100% {
-    transform: skewY(-0.8deg) translateY(0);
+    transform: rotateY(-4deg) skewY(-0.7deg) translateY(0);
   }
-  25% {
-    transform: skewY(0.9deg) translateY(-1.5px);
+  20% {
+    transform: rotateY(5deg) skewY(0.8deg) translateY(-2px);
   }
-  50% {
-    transform: skewY(1.2deg) translateY(0);
+  40% {
+    transform: rotateY(-3deg) skewY(1.1deg) translateY(0);
   }
-  75% {
-    transform: skewY(-0.4deg) translateY(1.5px);
+  60% {
+    transform: rotateY(6deg) skewY(0.4deg) translateY(1.5px);
+  }
+  80% {
+    transform: rotateY(-2deg) skewY(-0.5deg) translateY(0.5px);
   }
 }
 
@@ -856,6 +869,7 @@ body[data-reduce-motion="1"] .overlay__pennant {
   text-align: center;
   animation: none;
   transform: none;
+  filter: none;
 }
 
 @keyframes fade {
