@@ -4,6 +4,17 @@ import {
   enable as enableAutostart,
   isEnabled as isAutostartEnabled,
 } from "@tauri-apps/plugin-autostart";
+import { DEFAULT_PLANE_SVG } from "./plane";
+
+const MAX_SVG_BYTES = 256 * 1024;
+
+function sanitizeSvg(s: string): string {
+  return s
+    .replace(/<script[\s\S]*?<\/script>/gi, "")
+    .replace(/\s+on\w+\s*=\s*"[^"]*"/gi, "")
+    .replace(/\s+on\w+\s*=\s*'[^']*'/gi, "")
+    .replace(/javascript:/gi, "");
+}
 
 type Repeat = "none" | "daily" | "weekly";
 
@@ -163,6 +174,68 @@ async function onDelete(): Promise<void> {
   await refresh();
 }
 
+async function initPlanePicker(): Promise<void> {
+  const preview = $("#plane-preview") as HTMLDivElement;
+  const input = $("#plane-upload-input") as HTMLInputElement;
+  const resetBtn = $("#plane-reset-btn") as HTMLButtonElement;
+  const hint = $("#plane-hint") as HTMLParagraphElement;
+
+  const renderPreview = (svg: string, custom: boolean) => {
+    preview.innerHTML = svg;
+    preview.dataset.custom = custom ? "1" : "";
+    resetBtn.hidden = !custom;
+  };
+
+  async function loadCurrent() {
+    try {
+      const custom = await invoke<string | null>("get_plane_svg");
+      if (custom && custom.trim().length > 0) {
+        renderPreview(sanitizeSvg(custom), true);
+      } else {
+        renderPreview(DEFAULT_PLANE_SVG, false);
+      }
+    } catch (e) {
+      console.error("get_plane_svg failed", e);
+      renderPreview(DEFAULT_PLANE_SVG, false);
+    }
+  }
+
+  input.addEventListener("change", async () => {
+    const file = input.files?.[0];
+    input.value = "";
+    if (!file) return;
+    if (file.size > MAX_SVG_BYTES) {
+      hint.textContent = `Too large (max ${MAX_SVG_BYTES / 1024} KB).`;
+      return;
+    }
+    const text = await file.text();
+    if (!text.toLowerCase().includes("<svg")) {
+      hint.textContent = "Not an SVG file.";
+      return;
+    }
+    const clean = sanitizeSvg(text);
+    try {
+      await invoke("set_plane_svg", { svg: clean });
+      renderPreview(clean, true);
+      hint.textContent = "Custom plane saved.";
+    } catch (e) {
+      hint.textContent = String(e);
+    }
+  });
+
+  resetBtn.addEventListener("click", async () => {
+    try {
+      await invoke("clear_plane_svg");
+      renderPreview(DEFAULT_PLANE_SVG, false);
+      hint.textContent = "Default plane restored.";
+    } catch (e) {
+      hint.textContent = String(e);
+    }
+  });
+
+  await loadCurrent();
+}
+
 async function initAutostartToggle(): Promise<void> {
   const toggle = $("#autostart-toggle") as HTMLInputElement;
   try {
@@ -200,4 +273,5 @@ window.addEventListener("DOMContentLoaded", () => {
   });
   void refresh();
   void initAutostartToggle();
+  void initPlanePicker();
 });

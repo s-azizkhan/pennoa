@@ -3,6 +3,7 @@ mod commands;
 mod model;
 mod overlay;
 mod scheduler;
+mod settings;
 mod store;
 mod tray;
 
@@ -21,6 +22,10 @@ pub fn run() {
             let store = store::Store::load(&app.handle())
                 .map_err(|e| format!("failed to load meeting store: {e}"))?;
             app.manage(store);
+
+            let settings_store = settings::SettingsStore::load(&app.handle())
+                .map_err(|e| format!("failed to load settings store: {e}"))?;
+            app.manage(settings_store);
 
             tray::setup(&app.handle())?;
             scheduler::start(app.handle().clone());
@@ -41,6 +46,9 @@ pub fn run() {
             commands::add_meeting,
             commands::update_meeting,
             commands::delete_meeting,
+            commands::get_plane_svg,
+            commands::set_plane_svg,
+            commands::clear_plane_svg,
             accessibility::is_reduce_motion,
         ])
         .run(tauri::generate_context!())

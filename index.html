@@ -26,6 +26,35 @@
           <input id="autostart-toggle" type="checkbox" />
           <span class="settings__label">Launch Pennoa at login</span>
         </label>
+
+        <div class="settings__row settings__row--stacked">
+          <span class="settings__label">Plane icon</span>
+          <div class="plane-picker">
+            <div class="plane-picker__preview" id="plane-preview"></div>
+            <div class="plane-picker__actions">
+              <label class="btn btn--ghost">
+                Upload SVG…
+                <input
+                  id="plane-upload-input"
+                  type="file"
+                  accept=".svg,image/svg+xml"
+                  hidden
+                />
+              </label>
+              <button
+                type="button"
+                id="plane-reset-btn"
+                class="btn btn--ghost"
+                hidden
+              >
+                Reset
+              </button>
+            </div>
+            <p class="plane-picker__hint" id="plane-hint">
+              SVG only · replaces the default plane in every banner.
+            </p>
+          </div>
+        </div>
       </section>
     </main>
 

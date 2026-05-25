@@ -23,80 +23,157 @@ body {
 
 .overlay__stage {
   position: absolute;
-  top: 18%;
+  top: 14%;
   left: 0;
   display: flex;
   align-items: center;
-  transform: translateX(-50%);
+  gap: 0;
+  transform: translateX(-55%);
   will-change: transform;
-  /* BRAND.md §6: long entrance, slow middle, gentle exit. */
-  animation: drift 9s cubic-bezier(0.7, 0.05, 0.3, 0.95) forwards;
+  animation: drift 9s linear forwards;
+  filter: drop-shadow(0 12px 28px rgba(14, 26, 43, 0.22))
+    drop-shadow(0 3px 6px rgba(14, 26, 43, 0.18));
 }
 
 @keyframes drift {
   0% {
-    transform: translateX(-50%);
+    transform: translateX(-55%);
   }
   100% {
-    transform: translateX(130vw);
+    transform: translateX(135vw);
   }
 }
 
+/* === Pennant ============================================================ */
+
 .overlay__pennant {
+  position: relative;
   font-family: "GT Sectra", "Tiempos Headline", "New York", Georgia, serif;
-  font-size: 19px;
-  letter-spacing: -0.01em;
-  padding: 14px 32px 14px 20px;
-  border-radius: 6px 0 0 6px;
-  min-width: 240px;
-  margin-right: -6px;
-  box-shadow: 0 8px 24px rgba(14, 26, 43, 0.18);
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  padding: 18px 42px 18px 26px;
+  min-width: 280px;
   white-space: nowrap;
+  /* Swallow-pennant point on the right, flush left edge. */
+  clip-path: polygon(
+    0 0,
+    calc(100% - 26px) 0,
+    100% 50%,
+    calc(100% - 26px) 100%,
+    0 100%
+  );
 }
+
+.overlay__title {
+  position: relative;
+  z-index: 2;
+  display: inline-block;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+/* Decorative tassel/streamer — small line trailing off the pennant base */
+.overlay__tassel {
+  position: absolute;
+  bottom: -2px;
+  left: 18px;
+  right: 60px;
+  height: 2px;
+  background: currentColor;
+  opacity: 0.18;
+  border-radius: 2px;
+}
+
+/* === Plane ============================================================== */
 
 .overlay__plane {
-  width: 64px;
+  width: 150px;
   height: auto;
-  filter: drop-shadow(0 4px 6px rgba(14, 26, 43, 0.22));
+  margin-left: -10px;
+  /* Subtle rocking adds life without breaking the steady drift. */
+  animation: bob 2.6s ease-in-out infinite;
 }
 
-/* Stage palettes per PRD §4.2 */
+.overlay__plane svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+@keyframes bob {
+  0%,
+  100% {
+    transform: translateY(-2px) rotate(-0.8deg);
+  }
+  50% {
+    transform: translateY(2px) rotate(0.6deg);
+  }
+}
+
+/* === Stage palettes per PRD §4.2 ======================================= */
+
+/* T−10 — calm sky + parchment, slow */
 body[data-stage="t10"] .overlay__pennant {
-  background: linear-gradient(
-    90deg,
-    #dfe7ef 0%,
-    #dfe7ef 88%,
-    rgba(223, 231, 239, 0) 100%
-  );
-  color: #1d3552;
-}
-body[data-stage="t10"] .overlay__plane {
-  color: #1d3552;
+  color: #14304f;
+  background:
+    /* bottom accent stripe */
+    linear-gradient(
+      to bottom,
+      transparent 0%,
+      transparent 78%,
+      #5d8cab 78%,
+      #5d8cab 86%,
+      transparent 86%
+    ),
+    /* diagonal multi-stop */
+      linear-gradient(
+        135deg,
+        #b9d4e3 0%,
+        #dde8ef 32%,
+        #f4efe6 68%,
+        #ecdfc4 100%
+      );
 }
 
+body[data-stage="t10"] .overlay__tassel {
+  color: #14304f;
+}
+
+/* T−5 — warm amber + poppy, quicker */
 body[data-stage="t5"] .overlay__pennant {
-  background: linear-gradient(
-    90deg,
-    #f7cf8a 0%,
-    #f7cf8a 88%,
-    rgba(247, 207, 138, 0) 100%
-  );
-  color: #6b2d1b;
+  color: #471309;
+  background:
+    linear-gradient(
+        to bottom,
+        transparent 0%,
+        transparent 78%,
+        #8a2a18 78%,
+        #8a2a18 86%,
+        transparent 86%
+      ),
+    linear-gradient(
+      135deg,
+      #fbd99a 0%,
+      #f4a85d 35%,
+      #e07644 70%,
+      #c75644 100%
+    );
 }
-body[data-stage="t5"] .overlay__plane {
-  color: #c75644;
+
+body[data-stage="t5"] .overlay__tassel {
+  color: #471309;
 }
+
 body[data-stage="t5"] .overlay__stage {
   animation-duration: 7s;
-  top: 28%;
+  top: 26%;
 }
 
-/* Reduce-motion fallback: static centered banner, no plane motion.
-   Per PRD §6 accessibility row + BRAND.md §6 ("respect the cursor"
-   extends to motion preferences). */
+/* === Reduce-motion fallback ============================================ */
+
 body[data-reduce-motion="1"] .overlay__stage {
   left: 50%;
-  top: 28%;
+  top: 24%;
   transform: translate(-50%, 0);
   animation: fade 9s ease-in-out forwards;
   justify-content: center;
@@ -107,17 +184,10 @@ body[data-reduce-motion="1"] .overlay__plane {
 }
 
 body[data-reduce-motion="1"] .overlay__pennant {
-  border-radius: 6px;
-  margin-right: 0;
+  clip-path: none;
+  border-radius: 10px;
+  padding: 20px 32px;
   text-align: center;
-  background: var(--reduce-fill, #dfe7ef);
-}
-
-body[data-reduce-motion="1"][data-stage="t10"] .overlay__pennant {
-  background: #dfe7ef;
-}
-body[data-reduce-motion="1"][data-stage="t5"] .overlay__pennant {
-  background: #f7cf8a;
 }
 
 @keyframes fade {
