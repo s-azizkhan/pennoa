@@ -1,0 +1,75 @@
+:root {
+  --paper: #f4efe6;
+  --ink: #0e1a2b;
+  --amber: #e8a75c;
+  --sky: #a8c5d6;
+  --poppy: #c75644;
+
+  --font-display: "GT Sectra", "Tiempos Headline", "New York", Georgia, serif;
+  --font-body: Inter, "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
+
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink);
+  background-color: var(--paper);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+}
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 32px 24px;
+}
+
+.app__header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.app__mark {
+  font-size: 22px;
+  color: var(--amber);
+}
+
+.app__title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 500;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.app__tagline {
+  margin: 0 0 28px;
+  color: rgba(14, 26, 43, 0.6);
+  font-size: 14px;
+}
+
+.app__body {
+  border-top: 1px solid rgba(14, 26, 43, 0.08);
+  padding-top: 24px;
+}
+
+.app__placeholder {
+  color: rgba(14, 26, 43, 0.45);
+  text-align: center;
+  padding: 48px 0;
+  margin: 0;
+}
