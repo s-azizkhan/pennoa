@@ -3,6 +3,14 @@ name: Release
 on:
   push:
     branches: [master, main]
+    paths-ignore:
+      - "landing/**"
+      - "**/*.md"
+      - ".gitignore"
+      - "LICENSE"
+      - "brand.html"
+      - ".github/ISSUE_TEMPLATE/**"
+      - ".github/PULL_REQUEST_TEMPLATE.md"
   workflow_dispatch:
 
 concurrency:
