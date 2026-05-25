@@ -1,0 +1,91 @@
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+  background: transparent;
+}
+
+body {
+  font-family: Inter, -apple-system, BlinkMacSystemFont, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.overlay {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+}
+
+.overlay__stage {
+  position: absolute;
+  top: 18%;
+  left: 0;
+  display: flex;
+  align-items: center;
+  transform: translateX(-40%);
+  will-change: transform;
+  animation: drift 9s cubic-bezier(0.45, 0, 0.55, 1) forwards;
+}
+
+@keyframes drift {
+  0% {
+    transform: translateX(-40%);
+  }
+  100% {
+    transform: translateX(120vw);
+  }
+}
+
+.overlay__pennant {
+  font-family: "GT Sectra", "Tiempos Headline", "New York", Georgia, serif;
+  font-size: 19px;
+  letter-spacing: -0.01em;
+  padding: 14px 32px 14px 20px;
+  border-radius: 6px 0 0 6px;
+  min-width: 240px;
+  margin-right: -6px;
+  box-shadow: 0 8px 24px rgba(14, 26, 43, 0.18);
+  white-space: nowrap;
+}
+
+.overlay__plane {
+  width: 64px;
+  height: auto;
+  filter: drop-shadow(0 4px 6px rgba(14, 26, 43, 0.22));
+}
+
+/* Stage palettes per PRD §4.2 */
+body[data-stage="t10"] .overlay__pennant {
+  background: linear-gradient(
+    90deg,
+    #dfe7ef 0%,
+    #dfe7ef 88%,
+    rgba(223, 231, 239, 0) 100%
+  );
+  color: #1d3552;
+}
+body[data-stage="t10"] .overlay__plane {
+  color: #1d3552;
+}
+
+body[data-stage="t5"] .overlay__pennant {
+  background: linear-gradient(
+    90deg,
+    #f7cf8a 0%,
+    #f7cf8a 88%,
+    rgba(247, 207, 138, 0) 100%
+  );
+  color: #6b2d1b;
+}
+body[data-stage="t5"] .overlay__plane {
+  color: #c75644;
+}
+body[data-stage="t5"] .overlay__stage {
+  animation-duration: 7s;
+  top: 28%;
+}
