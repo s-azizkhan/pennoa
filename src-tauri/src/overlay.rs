@@ -3,6 +3,7 @@ use tauri::{AppHandle, WebviewUrl, WebviewWindowBuilder};
 const BANNER_HEIGHT: f64 = 200.0;
 const BANNER_TOP_RATIO: f64 = 0.0;
 
+#[allow(dead_code)] // wired into scheduler in M4
 pub fn show_banner(app: &AppHandle, title: &str, stage: Stage) -> tauri::Result<()> {
     let label = format!("overlay-{}", chrono::Utc::now().timestamp_millis());
 

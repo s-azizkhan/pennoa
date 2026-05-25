@@ -1,15 +1,20 @@
 :root {
   --paper: #f4efe6;
+  --paper-2: #ece5d5;
   --ink: #0e1a2b;
+  --ink-soft: rgba(14, 26, 43, 0.62);
+  --ink-mute: rgba(14, 26, 43, 0.42);
+  --hairline: rgba(14, 26, 43, 0.1);
   --amber: #e8a75c;
   --sky: #a8c5d6;
   --poppy: #c75644;
 
   --font-display: "GT Sectra", "Tiempos Headline", "New York", Georgia, serif;
-  --font-body: Inter, "SF Pro Text", -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-body: Inter, "SF Pro Text", -apple-system, BlinkMacSystemFont,
+    sans-serif;
 
   font-family: var(--font-body);
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.5;
   color: var(--ink);
   background-color: var(--paper);
@@ -30,10 +35,26 @@ body {
   min-height: 100vh;
 }
 
+button {
+  font-family: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  background: none;
+  border: none;
+  color: inherit;
+}
+
+input,
+select {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+}
+
 .app {
-  max-width: 480px;
+  max-width: 520px;
   margin: 0 auto;
-  padding: 32px 24px;
+  padding: 28px 24px 48px;
 }
 
 .app__header {
@@ -46,30 +67,193 @@ body {
 .app__mark {
   font-size: 22px;
   color: var(--amber);
+  line-height: 1;
 }
 
 .app__title {
   font-family: var(--font-display);
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 500;
   margin: 0;
   letter-spacing: -0.01em;
+  flex: 1;
+}
+
+.app__add {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  font-size: 20px;
+  line-height: 1;
+  background: var(--ink);
+  color: var(--paper);
+  transition: background 0.15s ease;
+}
+
+.app__add:hover {
+  background: #1d3552;
 }
 
 .app__tagline {
-  margin: 0 0 28px;
-  color: rgba(14, 26, 43, 0.6);
-  font-size: 14px;
+  margin: 0 0 24px;
+  color: var(--ink-soft);
+  font-size: 13px;
 }
 
-.app__body {
-  border-top: 1px solid rgba(14, 26, 43, 0.08);
-  padding-top: 24px;
+.meeting-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  border-top: 1px solid var(--hairline);
 }
 
-.app__placeholder {
-  color: rgba(14, 26, 43, 0.45);
+.meeting-list__empty {
+  list-style: none;
+  color: var(--ink-mute);
   text-align: center;
   padding: 48px 0;
-  margin: 0;
+}
+
+.meeting {
+  padding: 14px 4px;
+  border-bottom: 1px solid var(--hairline);
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.meeting:hover {
+  background: var(--paper-2);
+}
+
+.meeting__title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  letter-spacing: -0.005em;
+  margin-bottom: 3px;
+}
+
+.meeting__meta {
+  font-size: 12px;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.meeting__badge {
+  background: var(--amber);
+  color: var(--ink);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 2px 7px;
+  border-radius: 3px;
+}
+
+/* Modal */
+.modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(14, 26, 43, 0.32);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 12vh;
+  z-index: 50;
+}
+
+.modal[hidden] {
+  display: none;
+}
+
+.modal__sheet {
+  background: var(--paper);
+  border-radius: 10px;
+  padding: 24px;
+  width: min(420px, calc(100vw - 32px));
+  box-shadow: 0 24px 60px rgba(14, 26, 43, 0.25);
+}
+
+.modal__title {
+  font-family: var(--font-display);
+  font-size: 20px;
+  margin: 0 0 18px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+.field {
+  display: block;
+  margin-bottom: 14px;
+}
+
+.field-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.field__label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+  margin-bottom: 5px;
+}
+
+.field__input {
+  width: 100%;
+  padding: 9px 11px;
+  border: 1px solid var(--hairline);
+  border-radius: 6px;
+  background: #fff;
+  transition: border-color 0.15s ease;
+}
+
+.field__input:focus {
+  outline: none;
+  border-color: var(--amber);
+}
+
+.modal__actions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+.btn {
+  padding: 9px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 0.12s ease, color 0.12s ease;
+}
+
+.btn--primary {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+.btn--primary:hover {
+  background: #1d3552;
+}
+
+.btn--ghost {
+  color: var(--ink-soft);
+}
+
+.btn--ghost:hover {
+  color: var(--ink);
+}
+
+.btn--danger {
+  color: var(--poppy);
+}
+
+.btn--danger:hover {
+  background: rgba(199, 86, 68, 0.08);
 }
